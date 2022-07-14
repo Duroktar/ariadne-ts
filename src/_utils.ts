@@ -30,9 +30,9 @@ export function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value))
 }
 
-// TODO
-export function wrapping_add(self: number, rhs: number): number {
-  return self + rhs
+export function wrapping_add_usize(self: number, rhs: number): number {
+  // NOTE: this seems to work but is definitely wrong
+  return (self + rhs)
 }
 
 export const max = (self: number[]) => {
