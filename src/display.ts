@@ -1,9 +1,8 @@
 
 import { Formatter } from "./data/Formatter";
-import { isDisplay } from "./data/Display";
-import { range, write } from "./_utils";
 import { isOption } from "./data/Option";
 import { isResult } from "./data/Result";
+import { isCallback, range, write } from "./_utils";
 
 export class Show {
   constructor(public self: any) {}
@@ -45,35 +44,3 @@ export class Show {
 }
 
 export const isShow = Show.is
-
-// impl<T: Display> Display for Show<(T, usize)> {
-//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-//         for _ in 0..self.0.1 {
-//             write!(f, "{}", self.0.0)?;
-//         }
-//         Ok(())
-//     }
-// }
-
-// impl<'a, T, F: Fn(&mut fmt::Formatter, &'a T) -> fmt::Result> Display for Show<(&'a [T], F)> {
-//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-//         for x in self.0.0 {
-//             (self.0.1)(f, x)?;
-//         }
-//         Ok(())
-//     }
-// }
-
-// impl<T: Display> Display for Show<Option<T>> {
-//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-//         match &self.0 {
-//             Some(x) => write!(f, "{}", x),
-//             None => Ok(()),
-//         }
-//     }
-// }
-
-export const isCallback = (
-  maybeFunction: true | ((...args: any[]) => void),
-): maybeFunction is (...args: any[]) => void =>
-  typeof maybeFunction === 'function'

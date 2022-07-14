@@ -18,7 +18,6 @@ export function range(start: number, end: number) {
 }
 
 export function *rangeIter(start: number, end: number) {
-  // TODO: assert `start <= end`, etc..
   while (start < end) {
     yield start
     start++
@@ -90,37 +89,37 @@ export function include_str(path: string): string {
 
 export function binary_search_by_key<T>(arr: T[], x: any, fn: (o: T) => number): Result<number, number> {
 
-  let start=0, end=arr.length-1, mid, val;
+  let start = 0, end = arr.length - 1, mid, val;
 
   // Iterate while start not meets end
-  while (start<=end){
+  while (start < end){
 
-      // Find the mid index
-      mid=Math.floor((start + end)/2);
+    // Find the mid index
+    mid = Math.floor((start + end)/2);
 
-      val = fn(arr[mid]);
+    val = fn(arr[mid]);
 
-      // If element is present at mid, return True
-      if (val===x) return ok(mid);
+    // If element is present at mid, return True
+    if (val === x) return ok(mid);
 
-      // Else look in left or right half accordingly
-      else if (val < x)
-           start = mid + 1;
-      else
-           end = mid - 1;
+    // Else look in left or right half accordingly
+    else if (val < x)
+      start = mid + 1;
+    else
+      end = mid - 1;
   }
 
   return err(getSortedIndex(arr, x, fn));
 }
 
 function getSortedIndex(array: any[], x: any, fn: any) {
-  var low = 0,
-  high = array.length
+  let low = 0,
+      high = array.length
 
   while (low < high) {
-      var mid = (low + high) >>> 1;
-      if (x > fn(array[mid])) low = mid + 1;
-      else high = mid;
+    let mid = (low + high) >>> 1;
+    if (x > fn(array[mid])) low = mid + 1;
+    else high = mid;
   }
 
   return low;
@@ -145,3 +144,8 @@ export function min_by_key<T>(arr: T[], fn: (value: T) => number): Option<T> {
 export const isString = (o: any): o is string => typeof o === "string"
 export const isNumber = (n: any): n is number => typeof n === "number"
 export const isBoolean = (n: any): n is boolean => typeof n === "boolean"
+
+export const isCallback = (
+  maybeFunction: true | ((...args: any[]) => void),
+): maybeFunction is (...args: any[]) => void =>
+  typeof maybeFunction === 'function'

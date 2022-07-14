@@ -1,13 +1,12 @@
-// use super::*;
 
 import assert from "assert";
 import { readFileSync } from "fs";
-import { Display } from "./data/Display";
-import { err, ok, Result } from "./data/Result";
-import { Debug } from "./data/Debug";
-import { none, Option, some } from "./data/Option";
-import { Span, Range } from "./data/Span";
-import { binary_search_by_key, Displayable, format } from "./_utils";
+import { Debug } from "../data/Debug";
+import { Display } from "../data/Display";
+import { none, Option, some } from "../data/Option";
+import { err, ok, Result } from "../data/Result";
+import { Range, Span } from "../data/Span";
+import { binary_search_by_key, Displayable, format } from "../_utils";
 
 export type CacheInit = [id: string, source: Source] | Source | FnCache<string, any>
 
@@ -140,13 +139,6 @@ export class IdSource extends Source {
   }
   display(id: string): Option<Display> { return some(new Display(id)) }
 }
-
-// impl<Id: fmt::Display + Eq> Cache<Id> for (Id, Source) {
-//     fn fetch(&mut self, id: &Id) -> Result<&Source, Box<dyn fmt::Debug + '_>> {
-//         if id == &self.0 { Ok(&self.1) } else { Err(Box::new(format!("Failed to fetch source '{}'", id))) }
-//     }
-//     fn display<'a>(&self, id: &'a Id) -> Option<Box<dyn fmt::Display + 'a>> { Some(Box::new(id)) }
-// }
 
 type PathBuf = {}
 type Path = {

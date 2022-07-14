@@ -1,12 +1,11 @@
+import { Option, some } from "../data/Option";
+import { Span } from "../data/Span";
 import { Config } from "./Config";
 import { Label, ToString } from "./Label";
 import { iReport, Report } from "./Report";
 import { ReportKind } from "./ReportKind";
-import { Span } from "../data/Span";
-import { Option, some } from "../data/Option";
 
 /// A type used to build a [`Report`].
-// pub struct ReportBuilder<S: Span> {
 
 export interface iReportBuilder<S extends Span> {
   kind: ReportKind;

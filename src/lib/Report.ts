@@ -1,18 +1,19 @@
-import { CharSet, Config, LabelAttach } from "../lib/Config";
-import { Span, Range } from "../data/Span";
-import { ReportKind } from "./ReportKind";
-import { Label } from "./Label";
-import { ReportBuilder } from "./ReportBuilder";
-import { Cache, CacheInit } from "../source";
-import { Display } from "../data/Display";
-import { LabelInfo, LabelKind, SourceGroup } from "../write";
 import assert from "assert";
+import { Display } from "../data/Display";
+import { none, Option, Some, some } from "../data/Option";
+import { Err, Ok } from "../data/Result";
+import { Range, Span } from "../data/Span";
+import { stderrWriter, stdoutWriter, Write } from '../data/Write';
 import { Show } from "../display";
 import { Characters, iCharacters } from "../draw";
-import { rangeIter, write, range, format, writeln, eprintln, max, sort_by_key, min_by_key, isBoolean, isNumber, isString } from "../_utils";
-import { none, Option, Some, some } from "../data/Option";
-import { stderrWriter, stdoutWriter, Write } from '../data/Write';
-import { Err, Ok } from "../data/Result";
+import { CharSet, Config, LabelAttach } from "../lib/Config";
+import { eprintln, format, isBoolean, isNumber, isString, max, min_by_key, range, rangeIter, sort_by_key, write, writeln } from "../_utils";
+import { Label } from "./Label";
+import { LabelInfo, LabelKind } from "./LabelInfo";
+import { ReportBuilder } from "./ReportBuilder";
+import { ReportKind } from "./ReportKind";
+import { Cache, CacheInit } from "./Source";
+import { SourceGroup } from "./SourceGroup";
 
 /// A type representing a diagnostic that is ready to be written to output.
 
@@ -140,7 +141,6 @@ export class Report<S extends Span> implements iReport<S> {
     let groups = this.get_source_groups(cache);
 
     // Line number maximum width
-    // TODO: i messed this all up.. :/
     let filtered_groups = groups
       .filter_map(({ span, src_id }: SourceGroup<S>) => {
         let src_name: string = cache
@@ -230,10 +230,10 @@ export class Report<S extends Span> implements iReport<S> {
         ) {
           this.col = Math.floor(col)
 
-          assert(typeof this.col === 'number', 'col must be a number')
-          assert(label instanceof Label, 'label must be a Label')
-          assert(typeof multi === 'boolean', 'multi must be a boolean')
-          assert(typeof draw_msg === 'boolean', 'draw_msg must be a boolean')
+          // assert(typeof this.col === 'number', 'col must be a number')
+          // assert(label instanceof Label, 'label must be a Label')
+          // assert(typeof multi === 'boolean', 'multi must be a boolean')
+          // assert(typeof draw_msg === 'boolean', 'draw_msg must be a boolean')
         }
       }
 
@@ -314,9 +314,9 @@ export class Report<S extends Span> implements iReport<S> {
 
                     let label_row: number =
                       Option.from(line_labels
-                        .enumerate()
-                        .find(([_, l]) => label == l.label))
-                      .map_or(0, ([r, _]) => r);
+                          .enumerate()
+                          .find(([_, l]) => label == l.label))
+                        .map_or(0, ([r, _]) => r);
 
                     if (_report_row === label_row) {
                       if (margin.is_some()) {
@@ -352,18 +352,19 @@ export class Report<S extends Span> implements iReport<S> {
               }
             }
 
-            hbar = hbar.filter(l => margin_label.map_or(true, margin => margin.label != l) || !is_line);
+            hbar = hbar.filter(l => margin_label.map_or(true, margin => margin.label !== l) || !is_line);
 
             const getCorners = (): [Display, Display] => {
-              if (corner.is_some()) {
-                let [label, is_start] = corner.unwrap() as any;
+              if (corner.is_some() && Array.isArray(corner.unwrap()) && Label.is(corner.unwrap()[0]) && isBoolean(corner.unwrap()[1])) {
+                let [label, is_start] = corner.unwrap();
                 return [new Display(is_start ? draw.ltop : draw.lbot).fg(label.color), new Display(draw.hbar).fg(label.color)]
               } else if (hbar.filter(() => vbar.is_some() && !this.config.cross_gap).is_some()) {
                 let label: Label<S> = hbar.filter(() => vbar.is_some() && !this.config.cross_gap).unwrap()
                 return [new Display(draw.xbar).fg(label.color), new Display(draw.hbar).fg(label.color)]
               } else if (hbar.is_some()) {
                 let label: Label<S> = hbar.unwrap() as any
-                return [new Display(draw.hbar).fg(label.color), new Display(draw.hbar).fg(label.color)]
+                const d = new Display(draw.hbar).fg(label.color);
+                return [d, d]
               } else if (vbar.is_some()) {
                 let label: Label<S> = vbar.unwrap() as any
                 let vb = new Display(is_ellipsis
@@ -372,9 +373,9 @@ export class Report<S extends Span> implements iReport<S> {
                 )
                 return [vb.fg(label.color), new Display(' ').fg(none())]
               } else if (margin_ptr.is_some() && is_line) {
-                let [margin, is_start] = margin_ptr.unwrap() as any[]
-                let is_col = multi_label.map_or(false, ml => /* ** */ml == margin.label);
-                let is_limit = col == multi_labels.length;
+                let [margin, is_start] = margin_ptr.unwrap()
+                let is_col = multi_label.map_or(false, ml => ml === margin.label);
+                let is_limit = col === multi_labels.length;
                 return [
                   new Display(
                     is_limit ? draw.rarrow :
@@ -389,7 +390,8 @@ export class Report<S extends Span> implements iReport<S> {
                   ).fg(margin.label.color),
                 ]
               } else {
-                return [new Display(' ').fg(none()), new Display(' ').fg(none())]
+                const d = new Display(' ').fg(none());
+                return [d, d]
               };
             }
 
@@ -598,7 +600,7 @@ export class Report<S extends Span> implements iReport<S> {
                   const getCTailInner = () => {
                     if (underline.is_some()) {
                       // TODO: Is this good?
-                      if (vbar_ll.label.span.len() <= 1/*  || true */) {
+                      if (vbar_ll.label.span.len() <= 1) {
                         return [draw.underbar, draw.underline]
                       } else if (line.offset() + col === vbar_ll.label.span.start) {
                         return [draw.ltop, draw.underbar]
@@ -615,10 +617,7 @@ export class Report<S extends Span> implements iReport<S> {
                   }
 
                   let [c, tail] = getCTailInner()
-                  return [
-                    new Display(c).fg(vbar_ll.label.color),
-                    new Display(tail).fg(vbar_ll.label.color)
-                  ]
+                  return [new Display(c).fg(vbar_ll.label.color), new Display(tail).fg(vbar_ll.label.color)]
                 } else if (underline.is_some()) {
                   let underline_ll = underline.unwrap()
                   return [new Display(draw.underline).fg(underline_ll.label.color), new Display(draw.underline).fg(underline_ll.label.color)]
@@ -757,8 +756,8 @@ export class Report<S extends Span> implements iReport<S> {
 
 function match(kind: any, matchers: [any, (arg: any) => any][]) {
   for (let [type, then] of matchers) {
-    // TODO: fixme .. this is obviously a naive hack
-    if (kind === type) return then(kind as any)
+    // TODO: fixme .. this is an obvious hack
+    if (kind === type) return then(kind)
   }
 }
 
@@ -776,14 +775,6 @@ function* map<a, b>(a: Iterator<a>, f:(a:a) => b){
   }
 }
 
-function* filter<a>(a: Iterator<a>, p: (a:a) => boolean) {
-  let current = a.next()
-  while(current.done == false) {
-    if(p(current.value)) yield current.value
-    current = a.next()
-  }
-}
-
 function* take_while<a>(a: Iterator<a>, p: (a:a) => boolean) {
   let current = a.next()
   while(current.done == false) {
@@ -791,10 +782,6 @@ function* take_while<a>(a: Iterator<a>, p: (a:a) => boolean) {
     else break
     current = a.next()
   }
-}
-
-function* from_array<a>(a:a[]) {
-  for(const v of a) yield v
 }
 
 function to_array<a>(a: Iterator<a>) {
@@ -811,11 +798,11 @@ function count<a>(a: Iterator<a>) {
   return to_array(a).length
 }
 
-function matches(kind: LabelKind, multiline: LabelKind): boolean {
-  if (isString(kind) && isString(multiline)) {
-    return kind === multiline
+function matches(kind: LabelKind, other: LabelKind): boolean {
+  if (isString(kind) && isString(other)) {
+    return kind === other
   }
-  throw new Error("Function not implemented.");
+  throw new Error("`matches` unable to handle other input types besides `string`s.");
 }
 
 function makeIter<T extends any[] | string>(arr: T) {

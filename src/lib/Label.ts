@@ -1,4 +1,3 @@
-import assert from "assert";
 import { Color } from "../data/Color";
 import { none, Option, some } from "../data/Option";
 import { Range, SpanInit } from "../data/Span";
@@ -16,7 +15,6 @@ export interface Label<S extends Range> {
 export class Label<S> {
   /// Create a new [`Label`].
   constructor(span: S) {
-    assert(span !== undefined, "Label must have a span")
     this.span = span;
     this.msg = none();
     this.color = none();
@@ -71,6 +69,10 @@ export class Label<S> {
 
   static from<S extends Range, Init extends SpanInit>(obj: Init): Label<S> {
     return new Label(Range.from(obj)) as Label<S>
+  }
+
+  static is<S extends Range>(other: any): other is Label<S>{
+    return other instanceof Label
   }
 }
 

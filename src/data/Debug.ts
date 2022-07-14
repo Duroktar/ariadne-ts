@@ -1,2 +1,2 @@
 
-export type Debug = any;
+export type Debug = string;

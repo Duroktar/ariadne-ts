@@ -2,7 +2,6 @@ import { Formatter } from "../data/Formatter";
 import { write } from "../_utils";
 
 /// A type that defines the kind of report being produced.
-// #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 
 export class ReportKind {
   fmt(f: Formatter): any {

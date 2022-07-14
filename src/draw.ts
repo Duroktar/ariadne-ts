@@ -79,47 +79,6 @@ export abstract class Characters {
   }
 }
 
-// /// A trait used to add formatting attributes to displayable items.
-// ///
-// /// Attributes specified through this trait are not composable (i.e: the behaviour of two nested attributes each with a
-// /// conflicting attribute is left unspecified).
-// pub trait Fmt: Sized {
-//     /// Give this value the specified foreground colour
-//     fn fg<C: Into<Option<Color>>>(self, color: C) -> Foreground<Self> {
-//         Foreground(self, color.into())
-//     }
-
-//     /// Give this value the specified background colour
-//     fn bg<C: Into<Option<Color>>>(self, color: C) -> Background<Self> {
-//         Background(self, color.into())
-//     }
-// }
-// impl<T: fmt::Display> Fmt for T {}
-
-// export class Foreground<T> {
-//   private data = []
-//   fmt(f: Formatter): any /* -> fmt::Result */ {
-//     const col = this.data[1]
-//     if (col) {
-//       write(f.buf, "{}", Paint.new(this.data[0]).fg(col))
-//     } else {
-//       write(f.buf, "{}", this.data[0])
-//     }
-//   }
-// }
-
-// export class Background<T> {
-//   private data = []
-//   fmt(f: Formatter): any/*  -> fmt::Result */ {
-//     const col = this.data[1]
-//     if (col) {
-//       write(f.buf, "{}", Paint.new(this.data[0]).bg(col))
-//     } else {
-//       write(f.buf, "{}", this.data[0])
-//     }
-//   }
-// }
-
 /// A type that can generate distinct 8-bit colors.
 export class ColorGenerator {
   constructor(

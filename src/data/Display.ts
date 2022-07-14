@@ -1,4 +1,4 @@
-import { isCallback } from "../display";
+import { isCallback } from "../_utils";
 import { Color } from "./Color";
 import { isOption, Option } from "./Option";
 
@@ -6,8 +6,8 @@ export interface Display {
   fg(color: Option<Color>): any;
   bg(color: Option<Color>): any;
   chars(): string;
-  map(fn: (d: any) => any): this;
   display(): string;
+  map(fn: (d: any) => any): this;
   unwrap_or_else(d: () => string): string;
 }
 

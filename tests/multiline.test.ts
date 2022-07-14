@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest'
-import { Label, Range, Report, ReportKind, Source, include_str } from '../src'
+import { expect, test } from 'vitest';
+import { include_str, Label, Range, Report, ReportKind, Source } from '../src';
 import { Color, Fixed } from '../src/data/Color';
 import { Display } from '../src/data/Display';
 import { ColorGenerator } from '../src/draw';
@@ -48,5 +48,6 @@ test("multiline", () => {
       .finish()
       .print(["sample.tao", Source.from(include_str("examples/sample.tao"))])
 
+  // TODO
   expect(true).toEqual(true)
 })

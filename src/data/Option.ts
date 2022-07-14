@@ -1,3 +1,4 @@
+
 export abstract class Option<T> {
   abstract map<R>(fn: (val: T) => R): Option<R>
   abstract map_or<R>(d: R, fn: (val: T) => R): R
