@@ -358,8 +358,8 @@ export class Report<S extends Span> implements iReport<S> {
               if (corner.is_some()) {
                 let [label, is_start] = corner.unwrap() as any;
                 return [new Display(is_start ? draw.ltop : draw.lbot).fg(label.color), new Display(draw.hbar).fg(label.color)]
-              } else if (hbar.filter(() => vbar.is_some() && !this.config.cross_gap)) {
-                let label: Label<S> = hbar.filter(() => vbar.is_some() && !this.config.cross_gap) as any
+              } else if (hbar.filter(() => vbar.is_some() && !this.config.cross_gap).is_some()) {
+                let label: Label<S> = hbar.filter(() => vbar.is_some() && !this.config.cross_gap).unwrap()
                 return [new Display(draw.xbar).fg(label.color), new Display(draw.hbar).fg(label.color)]
               } else if (hbar.is_some()) {
                 let label: Label<S> = hbar.unwrap() as any
