@@ -1,10 +1,10 @@
 import { isCallback } from "../_utils";
-import { Color } from "./Color";
+import { ColorFn } from "./Color";
 import { isOption, Option } from "./Option";
 
 export interface Display {
-  fg(color: Option<Color>): any;
-  bg(color: Option<Color>): any;
+  fg(color: Option<ColorFn>): any;
+  bg(color: Option<ColorFn>): any;
   chars(): string;
   display(): string;
   map(fn: (d: any) => any): this;
@@ -16,7 +16,7 @@ export class Display implements Display {
   constructor(value: string | Display) {
     this.value = typeof value === "string" ? value : value.value
   }
-  fg(color: Option<Color> | Color): this {
+  fg(color: Option<ColorFn> | ColorFn): this {
     if (isOption(color)) {
       let func = (color.is_some() ? color.unwrap() : (a: any) => a) as any
       this.value = func(this.value)
@@ -25,7 +25,7 @@ export class Display implements Display {
     }
     return this
   };
-  bg(color: Option<Color> | Color): this {
+  bg(color: Option<ColorFn> | ColorFn): this {
     if (isOption(color)) {
       let func = (color.is_some() ? color.unwrap() : (a: any) => a) as any
       this.value = func(this.value)

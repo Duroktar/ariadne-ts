@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { include_str, Label, Range, Report, ReportKind, Source } from '../src';
-import { Color, Fixed } from '../src/data/Color';
+import { ColorFn, Fixed } from '../src/data/Color';
 import { Display } from '../src/data/Display';
 import { ColorGenerator } from '../src/draw';
 import { format } from '../src/_utils';
@@ -9,7 +9,7 @@ test("multiline", () => {
 
   let colors = ColorGenerator.new();
 
-  let results: [number, Color][] = []
+  let results: [number, ColorFn][] = []
 
   // Generate & choose some colours for each of our elements
   let a = colors.next(results);

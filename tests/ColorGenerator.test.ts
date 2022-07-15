@@ -1,12 +1,12 @@
 import { expect, test } from 'vitest';
-import { Color } from '../src/data/Color';
+import { ColorFn } from '../src/data/Color';
 import { ColorGenerator } from '../src/draw';
 
 test("ColorGenerator", () => {
 
   let colors = ColorGenerator.new();
 
-  let results: [number, Color][] = []
+  let results: [number, ColorFn][] = []
 
   colors.next(results);
   colors.next(results);

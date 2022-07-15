@@ -1,4 +1,4 @@
-import { Color } from "../data/Color";
+import { ColorFn } from "../data/Color";
 import { none, Option, some } from "../data/Option";
 import { Range, SpanInit } from "../data/Span";
 
@@ -7,7 +7,7 @@ import { Range, SpanInit } from "../data/Span";
 export interface Label<S extends Range> {
   span: S;
   msg: Option<string>;
-  color: Option<Color>;
+  color: Option<ColorFn>;
   order: number;
   priority: number;
 }
@@ -29,7 +29,7 @@ export class Label<S> {
   }
 
   /// Give this label a highlight colour.
-  with_color(color: Color): this {
+  with_color(color: ColorFn): this {
     this.color = some(color);
     return this;
   }

@@ -14,7 +14,11 @@ export const bgColors = {
   yellow: c.bgYellow,
 }
 
-export type Color = ((s: string) => string) | c.Chalk
+export type ColorFn = ((s: string) => string) | c.Chalk
+
+export abstract class Color {
+  static Fixed = Fixed
+}
 
 export function Fixed(n: number) {
   return c.ansi256(n)

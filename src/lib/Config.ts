@@ -1,4 +1,4 @@
-import { Color, colors, Fixed } from "../data/Color";
+import { ColorFn, colors, Fixed } from "../data/Color";
 import { Display } from "../data/Display";
 import { Option, some } from "../data/Option";
 
@@ -87,22 +87,22 @@ export class Config {
     return this;
   }
 
-  error_color(): Option<Color> {
+  error_color(): Option<ColorFn> {
     return some(colors.red).filter(() => this.color);
   }
-  warning_color(): Option<Color> {
+  warning_color(): Option<ColorFn> {
     return some(colors.yellow).filter(() => this.color);
   }
-  advice_color(): Option<Color> {
+  advice_color(): Option<ColorFn> {
     return some(Fixed(147)).filter(() => this.color);
   }
-  margin_color(): Option<Color> {
+  margin_color(): Option<ColorFn> {
     return some(Fixed(246)).filter(() => this.color);
   }
-  unimportant_color():Option<Color> {
+  unimportant_color():Option<ColorFn> {
     return some(Fixed(249)).filter(() => this.color);
   }
-  note_color(): Option<Color> {
+  note_color(): Option<ColorFn> {
     return some(Fixed(115)).filter(() => this.color);
   }
 
