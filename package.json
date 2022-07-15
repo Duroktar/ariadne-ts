@@ -6,8 +6,7 @@
   "scripts": {
     "example:multiline": "nodemon --config nodemon.json examples/multiline.ts",
     "example:simple": "nodemon --config nodemon.json examples/simple.ts",
-    "start:dev": "nodemon --config nodemon.json src/_test.ts",
-    "start": "ts-node src/_test.ts",
+    "example:stresstest": "ts-node examples/stresstest.ts",
     "test": "vitest"
   },
   "devDependencies": {
