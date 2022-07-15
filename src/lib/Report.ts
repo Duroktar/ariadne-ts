@@ -192,7 +192,7 @@ export class Report<S extends Span> implements iReport<S> {
       let line_range = src.get_line_range(span);
 
       // File name & reference
-      let location = src_id == this.location[0]
+      let location = src_id === this.location[0]
         ? this.location[1]
         : labels[0].label.span.start
 
@@ -296,7 +296,7 @@ export class Report<S extends Span> implements iReport<S> {
             let line_span = src.line(idx).unwrap().span();
 
             for (let [i, label] of enumerate(multi_labels.slice(0, (col + 1).min(multi_labels.length)))) {
-              let margin = margin_label.filter(m => label == m.label);
+              let margin = margin_label.filter(m => label === m.label);
 
               if (label.span.start <= line_span.end && label.span.end > line_span.start) {
                 let is_parent = i !== col;
@@ -315,7 +315,7 @@ export class Report<S extends Span> implements iReport<S> {
                     let label_row: number =
                       Option.from(line_labels
                           .enumerate()
-                          .find(([_, l]) => label == l.label))
+                          .find(([_, l]) => label === l.label))
                         .map_or(0, ([r, _]) => r);
 
                     if (_report_row === label_row) {
@@ -341,10 +341,10 @@ export class Report<S extends Span> implements iReport<S> {
               }
             }
 
-            if (margin_ptr.is_some() && margin_ptr.map_or(false, o => isNumber(o[0]) && isBoolean(o[1])) && is_line) {
+            if (margin_ptr.is_some() && margin_ptr.map_or(false, o => Label.is(o[0]) && isBoolean(o[1])) && is_line) {
               let [margin, _is_start] = margin_ptr.unwrap()
               if (_is_start) {
-                let is_col = multi_label.map_or(false, ml => ml == margin.label);
+                let is_col = multi_label.map_or(false, ml => ml === margin.label);
                 let is_limit = col + 1 === multi_labels.length;
                 if (!is_col && !is_limit) {
                   hbar = hbar.or(some(margin.label));
@@ -362,15 +362,12 @@ export class Report<S extends Span> implements iReport<S> {
                 let label: Label<S> = hbar.filter(() => vbar.is_some() && !this.config.cross_gap).unwrap()
                 return [new Display(draw.xbar).fg(label.color), new Display(draw.hbar).fg(label.color)]
               } else if (hbar.is_some()) {
-                let label: Label<S> = hbar.unwrap() as any
+                let label: Label<S> = hbar.unwrap()
                 const d = new Display(draw.hbar).fg(label.color);
                 return [d, d]
               } else if (vbar.is_some()) {
-                let label: Label<S> = vbar.unwrap() as any
-                let vb = new Display(is_ellipsis
-                    ? draw.vbar_gap
-                    : draw.vbar
-                )
+                let label: Label<S> = vbar.unwrap()
+                let vb = new Display(is_ellipsis ? draw.vbar_gap : draw.vbar)
                 return [vb.fg(label.color), new Display(' ').fg(none())]
               } else if (margin_ptr.is_some() && is_line) {
                 let [margin, is_start] = margin_ptr.unwrap()
@@ -378,10 +375,10 @@ export class Report<S extends Span> implements iReport<S> {
                 let is_limit = col === multi_labels.length;
                 return [
                   new Display(
-                    is_limit ? draw.rarrow :
-                    is_col ? is_start
-                        ? draw.ltop : draw.lcross
-                      : draw.hbar
+                    is_limit ? draw.rarrow
+                    : is_col ?
+                      is_start ? draw.ltop : draw.lcross
+                    : draw.hbar
                   ).fg(margin.label.color),
 
                   new Display((!is_limit)
@@ -416,7 +413,7 @@ export class Report<S extends Span> implements iReport<S> {
       for (let idx of range(line_range.start, line_range.end)) {
         // console.log('iterating line_ranges, idx:', idx);
 
-        if (!Some.is(src.line(idx))) {
+        if (src.line(idx).is_none()) {
           // console.log('iterating line_ranges (continue)');
           continue
         }
@@ -483,7 +480,7 @@ export class Report<S extends Span> implements iReport<S> {
         }
 
         // Skip this line if we don't have labels for it
-        if (line_labels.length == 0 && margin_label.is_none()) {
+        if (line_labels.length === 0 && margin_label.is_none()) {
           let within_label = multi_labels
               .some(label => label.span.contains(line.span().start));
           if (!is_ellipsis && within_label) {
@@ -521,7 +518,7 @@ export class Report<S extends Span> implements iReport<S> {
               // Only labels with notes get an arrow
               .enumerate()
               .filter(([_, ll]) => ll.label.msg.is_some() && (margin_label.map_or(true, m => ll.label !== m.label)))
-              .find(([j, ll]) => ll.col == col && ((row <= j && !ll.multi) || (row <= j && ll.multi))))
+              .find(([j, ll]) => ll.col === col && ((row <= j && !ll.multi) || (row <= j && ll.multi))))
             .map(([_, ll]) => ll);
 
         let get_highlight = (col: number): Option<Label<S>> =>
@@ -551,8 +548,8 @@ export class Report<S extends Span> implements iReport<S> {
             // Prioritise displaying smaller spans
             // .min_by_key(ll => [-ll.label.priority, ll.label.span.len()]);
             // .min_by_key(ll => ll.label.span.len()));
-            ll => -ll.label.priority + ll.label.span.len());
-            // ll => ll.label.span.len());
+            // ll => -ll.label.priority + ll.label.span.len());
+            ll => ll.label.span.len());
             // ll => -ll.label.priority);
 
         // Margin
@@ -576,8 +573,6 @@ export class Report<S extends Span> implements iReport<S> {
         write(w, "\n")
 
         // Arrows !!!
-        // TODO: maybe in here??
-        // console.log('Arrows');
         for (let row of range(0, line_labels.length)) {
           let line_label = line_labels[row];
 
@@ -695,10 +690,10 @@ export class Report<S extends Span> implements iReport<S> {
               // console.log('(2) writing c, tail', {c, tail})
 
               if (width > 0) {
-                  write(w, "{}", c)
+                write(w, "{}", c)
               }
               for (let _ of range(1, width)) {
-                  write(w, "{}", tail)
+                write(w, "{}", tail)
               }
           }
           if (line_label.draw_msg) {
@@ -706,6 +701,7 @@ export class Report<S extends Span> implements iReport<S> {
             // console.log('writing message')
             write(w, " {}", new Show(line_label.label.msg))
           }
+
           write(w, "\n")
         }
       }
@@ -771,7 +767,7 @@ function *enumerate<T>(groups: T[]) {
 
 function* map<a, b>(a: Iterator<a>, f:(a:a) => b){
   let value = a.next()
-  while(value.done == false) {
+  while(value.done === false) {
     yield f(value.value)
     value = a.next()
   }
@@ -779,7 +775,7 @@ function* map<a, b>(a: Iterator<a>, f:(a:a) => b){
 
 function* take_while<a>(a: Iterator<a>, p: (a:a) => boolean) {
   let current = a.next()
-  while(current.done == false) {
+  while(current.done === false) {
     if(p(current.value)) yield current.value
     else break
     current = a.next()
@@ -789,7 +785,7 @@ function* take_while<a>(a: Iterator<a>, p: (a:a) => boolean) {
 function to_array<a>(a: Iterator<a>) {
   let result: a[] = []
   let current = a.next()
-  while(current.done == false) {
+  while(current.done === false) {
     result.push(current.value)
     current = a.next()
   }

@@ -63,7 +63,9 @@ export const isSpan = Span.is
 export class Range extends Span {
   public SourceId: any
 
-  public source(): any { return this.SourceId }
+  public source(): any {
+    return this.SourceId
+  }
 
   public len(): number {
     return Math.abs(this.start - this.end);
@@ -72,7 +74,9 @@ export class Range extends Span {
     return item >= this.start && item < this.end
   }
 
-  static is = (o: any): o is Range => o instanceof Range
+  static is = (o: any): o is Range => {
+    return o instanceof Range
+  }
 
   static from(o: SpanInit) {
     if (isNumber(o[0]) && isNumber(o[1]))
