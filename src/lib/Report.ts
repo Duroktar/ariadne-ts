@@ -248,7 +248,7 @@ export class Report<S extends Span> implements iReport<S> {
       // console.log('Sort multiline labels by length');
 
       // Sort multiline labels by length
-      multi_labels.sort((a, b) => a.span.len() - b.span.len());
+      multi_labels.sort((a, b) => b.span.len() - a.span.len());
 
       //#region [ rgba(0, 20, 0, 0.3) ] Write_Margin
       let write_margin = (
@@ -447,7 +447,7 @@ export class Report<S extends Span> implements iReport<S> {
           .filter_map(([_i, label]) => {
             let is_start = line.span().contains(label.span.start);
             let is_end = line.span().contains(label.last_offset());
-            if (is_start && (margin_label.map((m: any) => label !== m.label) || true)) { // TODO: Check to see whether multi is the first on the start line or first on the end line
+            if (is_start && (margin_label.map_or(true, (m: any) => label !== m.label))) { // TODO: Check to see whether multi is the first on the start line or first on the end line
               return new LineLabel(
                 label.span.start - line.offset(),
                 label,
