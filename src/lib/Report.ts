@@ -501,7 +501,9 @@ export class Report<S extends Span> implements iReport<S> {
         }
 
         // Sort the labels by their columns
-        sort_by_key(line_labels, ll => `${ll.label.order.toString().padStart(4, '0')}${ll.col.toString().padStart(4, '0')}${!ll.label.span.start.toString().padStart(4, '0')}`);
+        sort_by_key(line_labels, ll => ll.label.order);
+        sort_by_key(line_labels, ll => ll.col);
+        sort_by_key(line_labels, ll => bton(!ll.label.span.start));
 
         // Determine label bounds so we know where to put error messages
         let arrow_end_space = this.config.compact ? 1 : 2 ;
