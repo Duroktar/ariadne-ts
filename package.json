@@ -1,9 +1,11 @@
 {
   "name": "ariadne-ts",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "0.1.5",
+  "main": "dist/src/index.js",
   "license": "MIT",
   "scripts": {
+    "build": "tsc",
+    "example:multifile": "nodemon --config nodemon.json examples/multifile.ts",
     "example:multiline": "nodemon --config nodemon.json examples/multiline.ts",
     "example:simple": "nodemon --config nodemon.json examples/simple.ts",
     "example:stresstest": "ts-node examples/stresstest.ts",

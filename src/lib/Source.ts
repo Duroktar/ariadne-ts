@@ -212,9 +212,9 @@ export class FnCache<Id, F extends Function> implements Cache<Id> {
 }
 
 /// Create a [`Cache`] from a collection of ID/strings, where each corresponds to a [`Source`].
-export function sources<Id extends string, S, I extends Array<string>>(iter: I): Cache<Id>
+export function sources<Id extends string, S, I extends Array<[string, string]>>(iter: I): FnCache<any, any>
 {
-    return FnCache.new(((id: Id) => format("Failed to fetch source '{}'", id)))
-        .with_sources(iter
-            .map(([id, s]) => [id, Source.from(s)] as [Id, Source]))
+  return FnCache.new(((id: Id) => format("Failed to fetch source '{}'", id)))
+    .with_sources(iter
+        .map(([id, s]) => [id, Source.from(s)] as [Id, Source]))
 }

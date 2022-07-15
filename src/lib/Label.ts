@@ -67,7 +67,9 @@ export class Label<S> {
     return this.span.end.saturating_sub(1).max(this.span.start)
   }
 
-  static from<S extends Range, Init extends SpanInit>(obj: Init): Label<S> {
+  static from = Label.new
+
+  static new<S extends Range, Init extends SpanInit>(obj: Init): Label<S> {
     return new Label(Range.from(obj)) as Label<S>
   }
 
