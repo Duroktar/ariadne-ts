@@ -1,4 +1,5 @@
-import { Range, Span } from "../data/Span";
+import { Span } from "../data/Span";
+import { Range } from "../data/Range";
 import { LabelInfo } from "./LabelInfo";
 
 export class SourceGroup<S extends Span> {

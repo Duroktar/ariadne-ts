@@ -1,19 +1,22 @@
 
 import assert from "assert";
 import { readFileSync } from "fs";
-import { Debug } from "../data/Debug";
 import { Display } from "../data/Display";
 import { none, Option, some } from "../data/Option";
 import { err, ok, Result } from "../data/Result";
-import { Range, Span } from "../data/Span";
-import { binary_search_by_key, Displayable, format } from "../_utils";
+import { Span } from "../data/Span";
+import { Range } from "../data/Range";
+import { binary_search_by_key } from "../utils";
+import { Displayable, format } from "../write";
+
+export type ErrMsg = string;
 
 export type CacheInit = [id: string, source: Source] | Source | FnCache<string, any>
 
 /// A trait implemented by [`Source`] caches.
 export abstract class Cache<Id> {
   /// Fetch the [`Source`] identified by the given ID, if possible.
-  abstract fetch(id: Id): Result<Source, Debug>;
+  abstract fetch(id: Id): Result<Source, ErrMsg>;
 
   /// Display the given ID. as a single inline value.
   ///
@@ -120,7 +123,7 @@ export class Source implements Cache<string> {
     return new Range(start, end)
   }
 
-  fetch(_: any): Result<Source, Debug> { return ok(this) }
+  fetch(_: any): Result<Source, ErrMsg> { return ok(this) }
   display(_: any): Option<Displayable> { return none() }
 
   static is(other: any): other is Source { return other instanceof Source; }
@@ -134,7 +137,7 @@ export class IdSource extends Source {
   ) {
     super(_lines, _len)
   }
-  fetch(id: string): Result<Source, Debug> {
+  fetch(id: string): Result<Source, ErrMsg> {
     return (id === this.data[0]) ? ok(this.data[1]) : err(format("Failed to fetch source '{}'", id))
   }
   display(id: string): Option<Display> { return some(new Display(id)) }
@@ -157,7 +160,7 @@ export class FileCache implements Cache<Path> {
     return new FileCache(new Map()/* HashMap::default() */)
   }
 
-  fetch(path: Path): Result<Source, Debug> {
+  fetch(path: Path): Result<Source, ErrMsg> {
     const entry = this.files.get(path.to_path_buf());
     if (entry !== undefined)
         return ok(entry)
@@ -197,7 +200,7 @@ export class FnCache<Id, F extends Function> implements Cache<Id> {
     }
     return this
   }
-  fetch(id: any): Result<Source, Debug> {
+  fetch(id: any): Result<Source, ErrMsg> {
     const entry = this.sources.get(id);
     if (entry !== undefined)
       return ok(entry)

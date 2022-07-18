@@ -1,6 +1,6 @@
 export type Result<T, E> = Ok<T, E> | Err<T, E>;
 
-export class Ok<T, E> {
+class Ok<T, E> {
   constructor(private value: T) {}
   map<R>(fn: (value: T) => R): Result<R, E> {
     return ok(fn(this.value))

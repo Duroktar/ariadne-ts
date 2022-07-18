@@ -1,5 +1,5 @@
 
-import { Range } from "../data/Span";
+import { Range } from "../data/Range";
 import { Label } from "./Label";
 
 export enum LabelKind {

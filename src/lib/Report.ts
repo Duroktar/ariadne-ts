@@ -1,13 +1,14 @@
 import assert from "assert";
 import { Display } from "../data/Display";
-import { none, Option, Some, some } from "../data/Option";
-import { Err, Ok } from "../data/Result";
-import { Range, Span } from "../data/Span";
+import { none, Option, some } from "../data/Option";
+import { Span } from "../data/Span";
+import { Range } from "../data/Range";
 import { stderrWriter, stdoutWriter, Write } from '../data/Write';
-import { Show } from "../display";
-import { Characters, iCharacters } from "../draw";
+import { Show } from "../data/Show";
+import { Characters, iCharacters } from "./Characters";
 import { CharSet, Config, LabelAttach } from "../lib/Config";
-import { eprintln, format, isBoolean, isNumber, isString, max, min_by_key, range, rangeIter, sort_by_key, write, writeln } from "../_utils";
+import { isBoolean, isNumber, isString, max, min_by_key, range, rangeIter, sort_by_key } from "../utils";
+import { eprintln, format, write, writeln } from "../write";
 import { Label } from "./Label";
 import { LabelInfo, LabelKind } from "./LabelInfo";
 import { ReportBuilder } from "./ReportBuilder";
@@ -43,7 +44,7 @@ export class Report<S extends Span> implements iReport<S> {
   ) {}
 
   /// Begin building a new [`Report`].
-  static build<S extends Span, Id = S['SourceId']>(kind: typeof ReportKind, src_id: Id, offset: number): ReportBuilder<S> {
+  static build<S extends Span, Id extends string>(kind: typeof ReportKind, src_id: Id | null, offset: number): ReportBuilder<S> {
     // TODO
     const builder = new ReportBuilder<S>(
       kind,
@@ -51,7 +52,7 @@ export class Report<S extends Span> implements iReport<S> {
       none(),
       none(),
       none(),
-      [src_id, offset],
+      [Option.from(src_id), offset],
       [],
       Config.default(),
     )
@@ -78,7 +79,7 @@ export class Report<S extends Span> implements iReport<S> {
     for (let label of this.labels) {
       let src_display = cache.display(label.span.source());
       let res = cache.fetch(label.span.source())
-      if (!Ok.is(res)) {
+      if (res.is_err()) {
         console.error("Unable to fetch source '{}': {}", src_display, res.unwrap());
         continue;
       }
@@ -134,8 +135,6 @@ export class Report<S extends Span> implements iReport<S> {
       [ReportKind.Custom,  () => this.kind.color],
     ]);
 
-    // console.log('header')
-
     writeln(w, "{} {}", new Display(id).fg(kind_color), new Show(this.msg));
 
     let groups = this.get_source_groups(cache);
@@ -150,7 +149,7 @@ export class Report<S extends Span> implements iReport<S> {
 
         let res = cache.fetch(src_id)
 
-        if (Err.is(res)) {
+        if (res.is_err()) {
           eprintln("Unable to fetch source {}: {}", src_name, res.unwrap());
           return null
         }
@@ -170,8 +169,6 @@ export class Report<S extends Span> implements iReport<S> {
 
     let line_no_width = max(filtered_groups) ?? 0
 
-    // console.log('Source sections', {groups});
-
     // --- Source sections ---
     let groups_len = groups.length;
     for (let [group_idx, { src_id, span, labels }] of enumerate(groups)) {
@@ -182,7 +179,7 @@ export class Report<S extends Span> implements iReport<S> {
 
       let res = cache.fetch(src_id)
 
-      if (Err.is(res)) {
+      if (res.is_err()) {
         eprintln("Unable to fetch source {}: {}", src_name, res.unwrap());
         continue
       }
@@ -201,8 +198,6 @@ export class Report<S extends Span> implements iReport<S> {
         .map(([_, idx, col]) => [format("{}", idx + 1), format("{}", col + 1)])
         .unwrap_or_else(() => ['?', '?']);
 
-      // console.log('File name & reference')
-
       let line_ref = format(":{}:{}", line_no, col_no);
       writeln(
           w,
@@ -217,7 +212,6 @@ export class Report<S extends Span> implements iReport<S> {
       )
 
       if (!this.config.compact) {
-        // console.log('!this.config.compact')
         writeln(w, "{}{}", new Show([' ', line_no_width + 2]), new Display(draw.vbar).fg(this.config.margin_color()))
       }
 
@@ -229,11 +223,6 @@ export class Report<S extends Span> implements iReport<S> {
           public draw_msg: boolean,
         ) {
           this.col = Math.floor(col)
-
-          // assert(typeof this.col === 'number', 'col must be a number')
-          // assert(label instanceof Label, 'label must be a Label')
-          // assert(typeof multi === 'boolean', 'multi must be a boolean')
-          // assert(typeof draw_msg === 'boolean', 'draw_msg must be a boolean')
         }
       }
 
@@ -244,8 +233,6 @@ export class Report<S extends Span> implements iReport<S> {
           multi_labels.push(label_info.label);
         }
       }
-
-      // console.log('Sort multiline labels by length');
 
       // Sort multiline labels by length
       multi_labels.sort((a, b) => b.span.len() - a.span.len());
@@ -274,7 +261,6 @@ export class Report<S extends Span> implements iReport<S> {
           line_no_margin = format("{}{}", new Show([' ', line_no_width + 1]), is_ellipsis ? draw.vbar_gap : draw.vbar_break)
         };
 
-        // console.log('writing line_no_margin')
 
         write(
           w,
@@ -284,7 +270,6 @@ export class Report<S extends Span> implements iReport<S> {
         )
 
         // Multi-line margins
-        // console.log('Multi-Line margins', {draw_labels});
         if (draw_labels) {
           for (let col of range(0, multi_labels.length + (bton(multi_labels.length > 0)))) {
             let corner: Option<[Label<S>, boolean]> = none();
@@ -314,9 +299,9 @@ export class Report<S extends Span> implements iReport<S> {
 
                     let label_row: number =
                       Option.from(line_labels
-                          .enumerate()
-                          .find(([_, l]) => label === l.label))
-                        .map_or(0, ([r, _]) => r);
+                        .enumerate()
+                        .find(([_, l]) => label === l.label)
+                      ).map_or(0, ([r, _]) => r);
 
                     if (_report_row === label_row) {
                       if (margin.is_some()) {
@@ -333,7 +318,6 @@ export class Report<S extends Span> implements iReport<S> {
                         vbar = vbar.or(some(label).filter(() => !is_parent));
                       }
                     } else {
-                      // TODO: this may be wrong
                       vbar = vbar.or(some(label).filter(() => !is_parent && !!(bton(is_start) ^ (bton(_report_row < label_row)))));
                     }
                   }
@@ -375,10 +359,13 @@ export class Report<S extends Span> implements iReport<S> {
                 let is_limit = col === multi_labels.length;
                 return [
                   new Display(
-                    is_limit ? draw.rarrow
-                    : is_col ?
-                      is_start ? draw.ltop : draw.lcross
-                    : draw.hbar
+                    is_limit
+                      ? draw.rarrow
+                      : is_col
+                        ? is_start
+                          ? draw.ltop
+                          : draw.lcross
+                        : draw.hbar
                   ).fg(margin.label.color),
 
                   new Display((!is_limit)
@@ -394,10 +381,8 @@ export class Report<S extends Span> implements iReport<S> {
 
             let [a, b] = getCorners()
 
-            // console.log('\nwrite corner a\n')
             write(w, "{}", a)
             if (!this.config.compact) {
-              // console.log('\nwrite corner b\n')
               write(w, "{}", b)
             }
           }
@@ -406,15 +391,11 @@ export class Report<S extends Span> implements iReport<S> {
       };
       // #endregion
 
-      // console.log('iterate line_ranges ...', {start: line_range.start, end: line_range.end});
-
       //#region [ rgba(0, 0, 0, 0.3) ] Body
       let is_ellipsis = false;
       for (let idx of range(line_range.start, line_range.end)) {
-        // console.log('iterating line_ranges, idx:', idx);
 
         if (src.line(idx).is_none()) {
-          // console.log('iterating line_ranges (continue)');
           continue
         }
 
@@ -553,11 +534,9 @@ export class Report<S extends Span> implements iReport<S> {
             // ll => -ll.label.priority);
 
         // Margin
-        // console.log('Margin');
         write_margin(w, idx, true, is_ellipsis, true, none(), line_labels, margin_label)
 
         // Line
-        // console.log('Line');
         if (!is_ellipsis) {
           for (let [col, _c] of enumerate(line.chars() as any as string[])) {
             let highlight = get_highlight(col)
@@ -624,7 +603,6 @@ export class Report<S extends Span> implements iReport<S> {
               }
 
               let [c, tail] = getCTailOuter()
-              // console.log('writing c, tail', {c, tail})
               for (let i of range(0, width)) {
                   write(w, "{}", i === 0 ? c : tail)
               }
@@ -653,7 +631,7 @@ export class Report<S extends Span> implements iReport<S> {
                       line_label.multi
                         ? line_label.draw_msg
                           ? draw.mbot
-                            : draw.rbot
+                          : draw.rbot
                         : draw.lbot
                     ).fg(line_label.label.color),
 
@@ -687,8 +665,6 @@ export class Report<S extends Span> implements iReport<S> {
 
               let [c, tail] = getctail()
 
-              // console.log('(2) writing c, tail', {c, tail})
-
               if (width > 0) {
                 write(w, "{}", c)
               }
@@ -697,8 +673,6 @@ export class Report<S extends Span> implements iReport<S> {
               }
           }
           if (line_label.draw_msg) {
-
-            // console.log('writing message')
             write(w, " {}", new Show(line_label.label.msg))
           }
 
@@ -707,11 +681,7 @@ export class Report<S extends Span> implements iReport<S> {
       }
       //#endregion
 
-      // console.log('iterate line_ranges DONE');
-
       let is_final_group = group_idx + 1 === groups_len;
-
-      // console.log('Help');
 
       // Help
       if (this.help.is_some() && is_final_group) {
@@ -724,8 +694,6 @@ export class Report<S extends Span> implements iReport<S> {
         write(w, "{}: {}\n", new Display("Help").fg(this.config.note_color()), note)
       }
 
-      // console.log('Note');
-
       // Note
       if (this.note.is_some() && is_final_group) {
         let note = this.note.unwrap()
@@ -736,8 +704,6 @@ export class Report<S extends Span> implements iReport<S> {
         write_margin(w, 0, false, false, true, some([0, false]), [], none())
         write(w, "{}: {}\n", new Display("Note").fg(this.config.note_color()), note)
       }
-
-      // console.log('Tail of report')
 
       // Tail of report
       if (!this.config.compact) {

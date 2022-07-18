@@ -1,6 +1,6 @@
-import { isCallback } from "../_utils";
-import { ColorFn } from "./Color";
-import { isOption, Option } from "./Option";
+import { isCallback } from "../utils";
+import { ColorFn } from "../lib/Color";
+import { isOption, type Option } from "./Option";
 
 export interface Display {
   fg(color: Option<ColorFn>): any;
@@ -12,7 +12,6 @@ export interface Display {
 }
 
 export class Display implements Display {
-  public value: string
   constructor(value: string | Display) {
     this.value = typeof value === "string" ? value : value.value
   }
@@ -49,6 +48,8 @@ export class Display implements Display {
   unwrap_or_else(d: () => string): string {
     return this.value ?? d()
   };
+
+  private value: string
 
   static is = (o: any): o is Display => o instanceof Display
 }

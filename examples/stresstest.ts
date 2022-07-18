@@ -1,14 +1,10 @@
-import { Report, ReportKind, Label, Range, Source, include_str } from "../src";
-import { Color } from "../src/data/Color";
-import { ColorGenerator } from "../src/draw";
-import { Config } from "../src/lib/Config";
-import { format } from "../src/_utils";
+import { Config, Color, Report, ReportKind, Label, Range, Source, include_str, ColorGenerator, format } from "../src";
 
-let colors = ColorGenerator.new();
+const colors = ColorGenerator.new();
 
 Report.build(ReportKind.Error, "stresstest.tao", 13)
   .with_code(3)
-  .with_message(format!("Incompatible types"))
+  .with_message(format("Incompatible types"))
   .with_label(Label.new(["stresstest.tao", Range.new(0, 1)]).with_message("Color").with_color(colors.next()))
   .with_label(Label.new(["stresstest.tao", Range.new(1, 2)]).with_message("Color").with_color(colors.next()))
   .with_label(Label.new(["stresstest.tao", Range.new(2, 3)]).with_message("Color").with_color(colors.next()))

@@ -1,5 +1,5 @@
 import { Formatter } from "../data/Formatter";
-import { write } from "../_utils";
+import { write } from "../write";
 
 /// A type that defines the kind of report being produced.
 

@@ -1,8 +1,9 @@
 
-import { Formatter } from "./data/Formatter";
-import { isOption } from "./data/Option";
-import { isResult } from "./data/Result";
-import { isCallback, range, write } from "./_utils";
+import { Formatter } from "./Formatter";
+import { isOption } from "./Option";
+import { isResult } from "./Result";
+import { isCallback, range } from "../utils";
+import { write } from "../write";
 
 export class Show {
   constructor(public self: any) {}

@@ -17,7 +17,7 @@ export abstract class Option<T> {
   }
 }
 
-export class Some<T> implements Option<T> {
+class Some<T> implements Option<T> {
   constructor(private value: T) {}
   map<R>(fn: (value: T) => R): Option<R> {
     return some(fn(this.value))
@@ -57,7 +57,7 @@ export class Some<T> implements Option<T> {
   }
 }
 
-export class None<T> implements Option<T> {
+class None<T> implements Option<T> {
   map<R>(fn: (value: T) => R): Option<R> {
     return none()
   }
@@ -86,7 +86,7 @@ export class None<T> implements Option<T> {
     return true
   }
   equal(other: Option<T>): boolean {
-    return false
+    return other.is_none()
   }
   static is<T>(o: Option<T>): o is None<T> {
     return o instanceof None

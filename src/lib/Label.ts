@@ -1,6 +1,7 @@
-import { ColorFn } from "../data/Color";
+import { ColorFn } from "./Color";
 import { none, Option, some } from "../data/Option";
-import { Range, SpanInit } from "../data/Span";
+import { SpanInit } from "../data/Span";
+import { Range } from "../data/Range";
 
 /// A type that represents a labelled section of source code.
 export interface Label<S extends Range> {
@@ -22,8 +23,8 @@ export class Label<S> {
   }
 
   /// Give this label a message.
-  with_message<M extends ToString>(msg: M): this {
-    this.msg = some(msg.toString());
+  with_message(msg: string): this {
+    this.msg = some(msg);
     return this;
   }
 
@@ -75,8 +76,4 @@ export class Label<S> {
   static is<S extends Range>(other: any): other is Label<S>{
     return other instanceof Label
   }
-}
-
-export interface ToString {
-  toString(): string;
 }

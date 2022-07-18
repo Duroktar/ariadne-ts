@@ -1,7 +1,7 @@
 import { Option, some } from "../data/Option";
 import { Span } from "../data/Span";
 import { Config } from "./Config";
-import { Label, ToString } from "./Label";
+import { Label } from "./Label";
 import { iReport, Report } from "./Report";
 import { ReportKind } from "./ReportKind";
 
@@ -30,40 +30,40 @@ export class ReportBuilder<S extends Span> {
     private config: Config
   ) { }
   /// Give this report a numerical code that may be used to more precisely look up the error in documentation.
-  with_code(code: ToString): this {
+  with_code(code: number | string): this {
     this.code = some(code.toString().padStart(2, '0'));
     return this;
   }
 
   /// Set the message of this report.
-  set_message(msg: ToString) {
-    this.msg = some(msg.toString());
+  set_message(msg: string) {
+    this.msg = some(msg);
   }
 
   /// Add a message to this report.
-  with_message(msg: ToString): this {
-    this.msg = some(msg.toString());
+  with_message(msg: string): this {
+    this.msg = some(msg);
     return this;
   }
 
   /// Set the note of this report.
-  set_note(note: ToString) {
-    this.note = some(note.toString());
+  set_note(note: string) {
+    this.note = some(note);
   }
 
   /// Set the note of this report.
-  with_note(note: ToString): this {
+  with_note(note: string): this {
     this.set_note(note);
     return this;
   }
 
   /// Set the help message of this report.
-  set_help(note: ToString) {
-    this.help = some(note.toString());
+  set_help(note: string) {
+    this.help = some(note);
   }
 
   /// Set the help message of this report.
-  with_help(note: ToString): this {
+  with_help(note: string): this {
     this.set_help(note);
     return this;
   }

@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { binary_search_by_key } from '../src/_utils'
+import { binary_search_by_key } from '../src/utils'
 
 let s = [[0, 0], [2, 1], [4, 1], [5, 1], [3, 1],
   [1, 2], [2, 3], [4, 5], [5, 8], [3, 13],

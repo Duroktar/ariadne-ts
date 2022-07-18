@@ -1,8 +1,4 @@
-import { Report, ReportKind, Label, Range, include_str } from "../src";
-import { Display } from "../src/data/Display";
-import { ColorGenerator } from "../src/draw";
-import { sources } from "../src/lib/Source";
-import { format } from "../src/_utils";
+import { Report, ReportKind, Label, Range, include_str, ColorGenerator, Display, format, sources } from "../src";
 
 let colors = ColorGenerator.new();
 

@@ -1,12 +1,7 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import sf from 'string-format';
-import { Display, isDisplay } from "./data/Display";
-import { stringFormatter } from "./data/Formatter";
-import { isOption, Option } from './data/Option';
-import { err, isResult, ok, Result } from './data/Result';
-import { Write } from './data/Write';
-import { isShow, Show } from './display';
+import { Option } from './data/Option';
+import { err, ok, Result } from './data/Result';
 
 export function range(start: number, end: number) {
   let rv = [];
@@ -29,9 +24,9 @@ export function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value))
 }
 
-export function wrapping_add_usize(self: number, rhs: number): number {
+export function wrapping_add_usize(lhs: number, rhs: number): number {
   // NOTE: this seems to work but is definitely wrong
-  return (self + rhs)
+  return (lhs + rhs)
 }
 
 export const max = (self: number[]) => {
@@ -43,45 +38,6 @@ export const min = (self: number[]) => {
   if (self.length === 0) return undefined
   return Math.min.apply(null, self);
 };
-
-export function write<W extends Write>(w: W, ...args: Displayable[]) {
-  w.write_fmt(format(...args.map(fromRust)))
-}
-
-export type Displayable<T = any, E = any> = Display | Show | Option<T> | Result<T, E> | string | number
-
-export function format(...args: Displayable[]): string {
-  const [head, ...rest] = args.map(fromRust)
-  return sf(head, ...rest);
-}
-
-const fromRust = (node: Displayable): string => {
-  if (isDisplay(node)) {
-    return node.display()
-  }
-  if (isShow(node)) {
-    let f = stringFormatter()
-    node.fmt(f)
-    return f.unwrap()
-  }
-  if (isOption(node)) {
-    return node.unwrap_or_else(() => '')
-  }
-  if (isResult(node)) {
-    return node.unwrap_or_else(() => '<(Unwrap Err)>')
-  }
-  return node.toString()
-}
-
-export function writeln<W extends Write>(w: W, ...args: Displayable[]) {
-  let val = format(...args.map(fromRust));
-  w.write_fmt(val)
-  w.write_fmt("\n")
-}
-
-export function eprintln(...args: Displayable[]): void {
-  console.error(format(...args))
-}
 
 export function include_str(path: string): string {
   return readFileSync(join(process.cwd(), path)).toString()
@@ -109,16 +65,16 @@ export function binary_search_by_key<T>(arr: T[], x: any, fn: (o: T) => number):
       end = mid - 1;
   }
 
-  return err(getSortedIndex(arr, x, fn));
+  return err(get_sorted_index(arr, x, fn));
 }
 
-function getSortedIndex(array: any[], x: any, fn: any) {
+function get_sorted_index(arr: any[], x: any, fn: any) {
   let low = 0,
-      high = array.length
+      high = arr.length
 
   while (low < high) {
     let mid = (low + high) >>> 1;
-    if (x > fn(array[mid])) low = mid + 1;
+    if (x > fn(arr[mid])) low = mid + 1;
     else high = mid;
   }
 
@@ -142,10 +98,18 @@ export function min_by_key<T>(arr: T[], fn: (value: T) => number): Option<T> {
 }
 
 export const isString = (o: any): o is string => typeof o === "string"
-export const isNumber = (n: any): n is number => typeof n === "number"
-export const isBoolean = (n: any): n is boolean => typeof n === "boolean"
+export const isNumber = (o: any): o is number => typeof o === "number"
+export const isBoolean = (o: any): o is boolean => typeof o === "boolean"
 
 export const isCallback = (
   maybeFunction: true | ((...args: any[]) => void),
 ): maybeFunction is (...args: any[]) => void =>
   typeof maybeFunction === 'function'
+
+export function toCamelCase(str: string) {
+  return str
+    .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
+      return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    })
+    .replace(/\s+/g, "");
+}

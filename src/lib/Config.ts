@@ -1,4 +1,4 @@
-import { ColorFn, colors, Fixed } from "../data/Color";
+import { ColorFn, colors, Fixed } from "./Color";
 import { Display } from "../data/Display";
 import { Option, some } from "../data/Option";
 

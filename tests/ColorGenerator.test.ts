@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
-import { ColorFn } from '../src/data/Color';
-import { ColorGenerator } from '../src/draw';
+import { ColorFn } from '../src/lib/Color';
+import { ColorGenerator } from '../src/lib/ColorGenerator';
 
 test("ColorGenerator", () => {
 

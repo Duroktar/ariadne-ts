@@ -1,5 +1,5 @@
-import { none, Option } from "./Option";
-import { Write, stdoutWriter, stringWriter } from "./Write";
+import { none, type Option } from "./Option";
+import { stdoutWriter, mkStringWriter, type Write } from "./Write";
 
 export enum Alignment {
   Left = 'Left',
@@ -31,6 +31,6 @@ export const stringFormatter = () => new class implements Formatter {
   align: Alignment = Alignment.Left;
   width: Option<number> = none();
   precision: Option<number> = none();
-  buf = stringWriter();
+  buf = mkStringWriter();
   unwrap() { return this.buf.unwrap(); }
 };

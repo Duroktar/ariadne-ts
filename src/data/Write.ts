@@ -1,4 +1,4 @@
-import { format } from "../_utils";
+import { format } from "../write";
 import { ok, Result } from "./Result";
 
 export interface Write {
@@ -50,4 +50,4 @@ class StringWriter implements Write {
 
 export const stdoutWriter = new StdoutWriter()
 export const stderrWriter = new StderrWriter()
-export const stringWriter = () => new StringWriter()
+export const mkStringWriter = () => new StringWriter()

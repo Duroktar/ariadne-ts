@@ -1,9 +1,9 @@
 import { expect, test } from 'vitest';
 import { include_str, Label, Range, Report, ReportKind, Source } from '../src';
-import { ColorFn, Fixed } from '../src/data/Color';
+import { ColorFn, Fixed } from '../src/lib/Color';
 import { Display } from '../src/data/Display';
-import { ColorGenerator } from '../src/draw';
-import { format } from '../src/_utils';
+import { ColorGenerator } from '../src/lib/ColorGenerator';
+import { format } from "../src/write";
 
 test("multiline", () => {
 
