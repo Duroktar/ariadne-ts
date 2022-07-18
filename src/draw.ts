@@ -99,12 +99,12 @@ export class ColorGenerator {
   }
 
   /// Generate the next colour in the sequence.
-  next(out: [number, ColorFn][] = []): ColorFn {
+  next(out?: [number, ColorFn][]): ColorFn {
     for (let i of range(0, 3)) {
       // magic constant, one of only two that have this property!
       const rhs = 40503 * (i * 4 + 1130)
       const c = wrapping_add_usize(this.state[i], rhs)
-      let u16 = parseInt(`${c.toString(2).slice(-16)}`, 2)
+      const u16 = parseInt(`${c.toString(2).slice(-16)}`, 2)
       this.state[i] = u16;
     }
 
@@ -114,7 +114,7 @@ export class ColorGenerator {
        + (this.state[0] / 65535.0 * (1.0 - this.min_brightness) + this.min_brightness) * 180.0) % 256)
 
     const colorFn = Fixed(value);
-    out.push([value, colorFn])
+    out?.push([value, colorFn])
     return colorFn
   }
 

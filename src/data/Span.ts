@@ -1,18 +1,5 @@
 import { isNumber, isString, range } from "../_utils";
 
-// impl Span for Range<usize> {
-//     type SourceId = ();
-//     fn source(&self) -> &Self::SourceId { &() }
-//     fn start(&self) -> usize { self.start }
-//     fn end(&self) -> usize { self.end }
-// }
-// impl<Id: fmt::Debug + Hash + PartialEq + Eq + ToOwned> Span for (Id, Range<usize>) {
-//     type SourceId = Id;
-//     fn source(&self) -> &Self::SourceId { &self.0 }
-//     fn start(&self) -> usize { self.1.start }
-//     fn end(&self) -> usize { self.1.end }
-// }
-
 export type SpanInit = [src: string, range: Range] | [start: number, end: number];
 
 export class Span {
@@ -74,11 +61,12 @@ export class Range extends Span {
     return item >= this.start && item < this.end
   }
 
-  static is = (o: any): o is Range => {
+  static is(o: any): o is Range {
     return o instanceof Range
   }
 
-  static from(o: SpanInit) {
+  static from(o: SpanInit): Range
+  {
     if (isNumber(o[0]) && isNumber(o[1]))
       return new Span(o[0], o[1])
 
@@ -89,5 +77,10 @@ export class Range extends Span {
     }
 
     throw new Error(`Invalid SpanInit`)
+  }
+
+  static new(start: number, end: number): Span
+  {
+    return new Range(start, end)
   }
 }

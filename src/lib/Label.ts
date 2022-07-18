@@ -3,7 +3,6 @@ import { none, Option, some } from "../data/Option";
 import { Range, SpanInit } from "../data/Span";
 
 /// A type that represents a labelled section of source code.
-// interface Label<S extends Range<number>> {
 export interface Label<S extends Range> {
   span: S;
   msg: Option<string>;
