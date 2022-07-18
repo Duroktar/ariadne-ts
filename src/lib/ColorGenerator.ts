@@ -13,7 +13,7 @@ export class ColorGenerator {
   ///
   /// The minimum brightness can be used to control the colour brightness (0.0 - 1.0). The default is 0.5.
   static from_state(state: [number, number, number], min_brightness: number): ColorGenerator {
-    return new ColorGenerator(state, clamp(min_brightness, 1.0, 0.0))
+    return new ColorGenerator(state, clamp(min_brightness, 0.0, 1.0))
   }
 
   /// Create a new [`ColorGenerator`] with the default state.
