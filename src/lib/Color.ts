@@ -1,4 +1,7 @@
-import c from 'chalk'
+import chalk from 'chalk'
+
+const options: any = {enabled: true, level: 2};
+const c = new chalk.Instance(options);
 
 export const colors = {
   blue:   c.blue,
@@ -14,7 +17,7 @@ export const bgColors = {
   yellow: c.bgYellow,
 }
 
-export type ColorFn = ((s: string) => string) | c.Chalk
+export type ColorFn = ((s: string) => string) | chalk.Chalk
 
 export abstract class Color {
   static Fixed = Fixed

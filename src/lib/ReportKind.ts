@@ -4,6 +4,7 @@ import { write } from "../write";
 /// A type that defines the kind of report being produced.
 
 export class ReportKind {
+  constructor(...args: any[]) {}
   fmt(f: Formatter): any {
     if (this instanceof ReportKind.Error)
       return write(f.buf, "Error");
@@ -24,12 +25,9 @@ export class ReportKind {
   /// The report is advice to the user about a potential anti-pattern of other benign issues.
   static Advice = class Advice extends ReportKind { };
   /// The report is of a kind not built into Ariadne.
-  // Custom(&'static str, Color),
   static Custom = class Custom extends ReportKind {
-    constructor(public s: any) {
+    constructor(public s: any, public color: any) {
       super()
     }
   };
-
-  static color: any;
 }

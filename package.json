@@ -5,10 +5,8 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "example:multifile": "nodemon --config nodemon.json examples/multifile.ts",
-    "example:multiline": "nodemon --config nodemon.json examples/multiline.ts",
-    "example:simple": "nodemon --config nodemon.json examples/simple.ts",
-    "example:stresstest": "ts-node examples/stresstest.ts",
+    "example": "sh scripts/run-example.sh",
+    "example:watch": "sh scripts/watch-example.sh",
     "test": "vitest"
   },
   "devDependencies": {

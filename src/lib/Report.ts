@@ -1,14 +1,14 @@
 import assert from "assert";
 import { Display } from "../data/Display";
 import { none, Option, some } from "../data/Option";
-import { Span } from "../data/Span";
 import { Range } from "../data/Range";
-import { stderrWriter, stdoutWriter, Write } from '../data/Write';
 import { Show } from "../data/Show";
-import { Characters, iCharacters } from "./Characters";
+import { Span } from "../data/Span";
+import { stderrWriter, stdoutWriter, Write } from '../data/Write';
 import { CharSet, Config, LabelAttach } from "../lib/Config";
-import { isBoolean, isNumber, isString, max, min_by_key, range, rangeIter, sort_by_key } from "../utils";
+import { bton, isBoolean, isNumber, max, min_by_key, range, rangeIter, sort_by_key } from "../utils";
 import { eprintln, format, write, writeln } from "../write";
+import { Characters, iCharacters } from "./Characters";
 import { Label } from "./Label";
 import { LabelInfo, LabelKind } from "./LabelInfo";
 import { ReportBuilder } from "./ReportBuilder";
@@ -29,6 +29,7 @@ export interface iReport<S extends Span> {
   config: Config;
   eprint(cache: CacheInit): void
   print(cache: CacheInit): void
+  printTo(init: CacheInit, writer: Write): void
 }
 
 export class Report<S extends Span> implements iReport<S> {
@@ -44,7 +45,11 @@ export class Report<S extends Span> implements iReport<S> {
   ) {}
 
   /// Begin building a new [`Report`].
-  static build<S extends Span, Id extends string>(kind: typeof ReportKind, src_id: Id | null, offset: number): ReportBuilder<S> {
+  static build<S extends Span, Id extends string>(
+    kind: typeof ReportKind,
+    src_id: Id | null,
+    offset: number,
+  ): ReportBuilder<S> {
     // TODO
     const builder = new ReportBuilder<S>(
       kind,
@@ -74,7 +79,12 @@ export class Report<S extends Span> implements iReport<S> {
     this.write(cache, stdoutWriter)
   }
 
-  get_source_groups(cache: Cache<S['SourceId']>): SourceGroup<S>[] {
+  printTo(init: CacheInit, writer: Write): void {
+    const cache = Cache.from(init)
+    this.write(cache, writer)
+  }
+
+  private get_source_groups(cache: Cache<S['SourceId']>): SourceGroup<S>[] {
     let groups: SourceGroup<S>[] = []
     for (let label of this.labels) {
       let src_display = cache.display(label.span.source());
@@ -118,7 +128,7 @@ export class Report<S extends Span> implements iReport<S> {
   /// Write this diagnostic to an implementor of [`Write`].
   ///
   /// If you wish to write to `stderr` or `stdout`, you can do so via [`Report::eprint`] or [`Report::print`] respectively.
-  write<C extends Cache<string>, W extends Write>(cache: C, w: W): void {
+  private write<C extends Cache<string>, W extends Write>(cache: C, w: W): void {
     let draw: iCharacters = match(this.config.char_set, [
       [CharSet.Unicode, () => Characters.unicode()],
       [CharSet.Ascii,   () => Characters.ascii()],
@@ -132,7 +142,7 @@ export class Report<S extends Span> implements iReport<S> {
       [ReportKind.Error,   () => this.config.error_color()],
       [ReportKind.Warning, () => this.config.warning_color()],
       [ReportKind.Advice,  () => this.config.advice_color()],
-      [ReportKind.Custom,  () => this.kind.color],
+      [ReportKind.Custom,  (kind: any) => kind.color],
     ]);
 
     writeln(w, "{} {}", new Display(id).fg(kind_color), new Show(this.msg));
@@ -229,7 +239,7 @@ export class Report<S extends Span> implements iReport<S> {
       // Generate a list of multi-line labels
       let multi_labels: Label<S>[] = [];
       for (let label_info of labels) {
-        if (matches(label_info.kind, LabelKind.Multiline)) {
+        if (label_info.kind === LabelKind.Multiline) {
           multi_labels.push(label_info.label);
         }
       }
@@ -446,13 +456,16 @@ export class Report<S extends Span> implements iReport<S> {
           })
 
         for (let label_info of labels.filter(l => l.label.span.start >= line.span().start && l.label.span.end <= line.span().end)) {
-          if (matches(label_info.kind, LabelKind.Inline)) {
+          if (label_info.kind === LabelKind.Inline) {
+
+            let col = match(this.config.label_attach, [
+              [LabelAttach.Start,  () => label_info.label.span.start],
+              [LabelAttach.Middle, () => (label_info.label.span.start + label_info.label.span.end) / 2],
+              [LabelAttach.End,    () => label_info.label.last_offset()],
+            ]);
+
             line_labels.push(new LineLabel(
-              match(this.config.label_attach, [
-                [LabelAttach.Start,   () => label_info.label.span.start],
-                [LabelAttach.Middle,  () => (label_info.label.span.start + label_info.label.span.end) / 2],
-                [LabelAttach.End,     () => label_info.label.last_offset()],
-              ]).max(label_info.label.span.start) - line.offset(),
+              col.max(label_info.label.span.start) - line.offset(),
               label_info.label,
               false,
               true,
@@ -715,14 +728,38 @@ export class Report<S extends Span> implements iReport<S> {
         }
       }
     }
+
+    if (groups_len === 0) {
+
+      // Help
+      if (this.help.is_some()) {
+        let note = this.help.unwrap()
+        if (!this.config.compact) {
+          write(w, "\n")
+        }
+        write(w, "{}: {}\n", new Display("Help").fg(this.config.note_color()), note)
+      }
+
+      // Note
+      if (this.note.is_some()) {
+        let note = this.note.unwrap()
+        if (!this.config.compact) {
+          write(w, "\n")
+        }
+        write(w, "{}: {}\n", new Display("Note").fg(this.config.note_color()), note)
+      }
+    }
   }
 }
 
-function match(kind: any, matchers: [any, (arg: any) => any][]) {
+type MatchResult<T> = T extends abstract new (...args: any) => infer RT ? RT : T;
+
+function match<T, R>(kind: T, matchers: [T, (arg: MatchResult<T>) => R][]): R {
   for (let [type, then] of matchers) {
-    // TODO: fixme .. this is an obvious hack
-    if (kind === type) return then(kind)
+    // TODO: fixme .. this is a hack
+    if (<any>kind === type) return then(kind as any)
   }
+  return null as any
 }
 
 function *enumerate<T>(groups: T[]) {
@@ -762,13 +799,6 @@ function count<a>(a: Iterator<a>) {
   return to_array(a).length
 }
 
-function matches(kind: LabelKind, other: LabelKind): boolean {
-  if (isString(kind) && isString(other)) {
-    return kind === other
-  }
-  throw new Error("`matches` unable to handle other input types besides `string`s.");
-}
-
 function makeIter<T extends any[] | string>(arr: T) {
   let cursor = 0
   let next = (): Option<string> => {
@@ -780,5 +810,3 @@ function makeIter<T extends any[] | string>(arr: T) {
 
   return { next, cursor }
 }
-
-const bton = (b: boolean): number => b === true ? 1 : 0

@@ -36,14 +36,19 @@ class StderrWriter implements Write {
 class StringWriter implements Write {
   private value: string[] = []
   write_str(s: string): Result<null, Error> {
-    throw new Error("Function not implemented")
+    this.value.push(s)
+    return ok(null)
   }
   write_char(c: string): Result<null, Error> {
-    throw new Error("Function not implemented")
+    this.value.push(c)
+    return ok(null)
   }
   write_fmt(...args: any[]): Result<null, Error> {
     this.value.push(format(...args))
     return ok(null)
+  }
+  map(fn: (value: string) => any) {
+    return fn(this.unwrap())
   }
   unwrap() { return this.value.join('') }
 }

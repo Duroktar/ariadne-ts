@@ -1,7 +1,6 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { Option } from './data/Option';
-import { err, ok, Result } from './data/Result';
+import { Option } from '../data/Option';
+
+export { binary_search_by_key } from './binary_search_by_key'
 
 export function range(start: number, end: number) {
   let rv = [];
@@ -39,47 +38,8 @@ export const min = (self: number[]) => {
   return Math.min.apply(null, self);
 };
 
-export function include_str(path: string): string {
-  return readFileSync(join(process.cwd(), path)).toString()
-}
-
-export function binary_search_by_key<T>(arr: T[], x: any, fn: (o: T) => number): Result<number, number> {
-
-  let start = 0, end = arr.length - 1, mid, val;
-
-  // Iterate while start not meets end
-  while (start < end){
-
-    // Find the mid index
-    mid = Math.floor((start + end)/2);
-
-    val = fn(arr[mid]);
-
-    // If element is present at mid, return True
-    if (val === x) return ok(mid);
-
-    // Else look in left or right half accordingly
-    else if (val < x)
-      start = mid + 1;
-    else
-      end = mid - 1;
-  }
-
-  return err(get_sorted_index(arr, x, fn));
-}
-
-function get_sorted_index(arr: any[], x: any, fn: any) {
-  let low = 0,
-      high = arr.length
-
-  while (low < high) {
-    let mid = (low + high) >>> 1;
-    if (x > fn(arr[mid])) low = mid + 1;
-    else high = mid;
-  }
-
-  return low;
-}
+// convert a boolean to an integer value
+export const bton = (b: boolean): number => b === true ? 1 : 0
 
 export function sort_by_key<T>(arr: T[], fn: (a: T) => number | string): void {
   arr.sort((a, b) => {
