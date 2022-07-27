@@ -73,3 +73,12 @@ export function toCamelCase(str: string) {
     })
     .replace(/\s+/g, "");
 }
+
+// export function assert(value: unknown, message?: string | Error): asserts value {
+//   if (!value)
+//     throw (message === 'string')
+//       ? new Error(message)
+//       : (message === undefined)
+//         ? new Error()
+//         : message;
+// }
