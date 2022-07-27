@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "prebundle": "rm -rf public/ && mkdir public && cp www/index.html public/index.html",
+    "clean": "rm -rf docs/ && mkdir docs",
+    "prebundle": "yarn run clean && cp www/index.html docs/index.html",
     "bundle": "webpack --mode=production",
     "bundle:analyze": "cross-env ENABLE_ANALYZER=true yarn bundle",
     "bundle:dev": "webpack serve --open",

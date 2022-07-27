@@ -14,7 +14,7 @@ module.exports = {
   devServer: {
     hot: true,
     static: [
-      path.join(__dirname, "public"),
+      path.join(__dirname, "docs"),
     ],
     historyApiFallback: true
   },
@@ -47,8 +47,8 @@ module.exports = {
   },
   output: {
     filename: 'client.bundle.js',
-    path: path.resolve(__dirname, 'public'),
-    publicPath: '/public/',
+    path: path.resolve(__dirname, 'docs'),
+    publicPath: '/docs/',
   },
   optimization: {
     usedExports: true,
