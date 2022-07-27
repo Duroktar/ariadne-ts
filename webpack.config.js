@@ -1,8 +1,14 @@
 const path = require('path');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const webpack = require('webpack')
 
-const plugins = [];
+const plugins = [
+    // NOTE: fix "process is not defined" error
+    new webpack.ProvidePlugin({
+        process: 'process/browser',
+    }),
+];
 
 if (process.env['ENABLE_ANALYZER'] === 'true')
     plugins.push(new BundleAnalyzerPlugin())
