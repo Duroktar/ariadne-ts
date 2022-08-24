@@ -25,7 +25,7 @@ export const formatter = new class implements Formatter {
   buf: Write = stdoutWriter;
 };
 
-export const stringFormatter = () => new class implements Formatter {
+export const stringFormatter = (): Formatter & {unwrap(): string} => new class implements Formatter {
   flags: number = 0;
   fill: string = '';
   align: Alignment = Alignment.Left;

@@ -1,5 +1,5 @@
-import { LabelType } from 'www/components/LabelForm';
-import { object, string, number, InferType, mixed, array } from 'yup';
+import { array, InferType, mixed, number, object, string } from 'yup';
+import { LabelType } from '../components/LabelForm';
 
 export enum ErrorKind {
   Error = "Error",

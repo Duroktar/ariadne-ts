@@ -1,12 +1,12 @@
-import React from "react";
+import * as React from "react";
 import AceEditor from "react-ace";
-import { getSelectionRange } from "www/utils/getSelectionRange";
+import { Ace, createEditSession } from 'ace-builds';
+import { getSelectionRange } from "../utils/getSelectionRange";
 
 import "ace-builds/webpack-resolver";
 import "ace-builds/src-noconflict/mode-javascript";
-import "ace-builds/src-noconflict/mode-jsx";
-import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/theme-monokai";
+import 'ace-builds/src-noconflict/ext-searchbox';
 import "ace-builds/src-noconflict/ext-language_tools";
 
 type EditorProps = {
@@ -19,6 +19,13 @@ type EditorProps = {
 
 export const Editor = (props: EditorProps) => {
     const editorRef = React.useRef<AceEditor>(null)
+    const editSessionRef = React.useRef<Ace.EditSession>()
+    React.useEffect(() => {
+        if (editorRef.current) {
+            editSessionRef.current = editorRef.current.editor.session
+            debugger
+        }
+    }, [editorRef.current])
     return (
         <AceEditor
             ref={editorRef}
@@ -31,7 +38,14 @@ export const Editor = (props: EditorProps) => {
             editorProps={{ $blockScrolling: true }}
             defaultValue={props.defaultValue}
             onSelectionChange={(...args) => {
-                props.onSelectionChange?.(getSelectionRange(editorRef.current?.editor), ...args)
+                if (editorRef.current?.editor === undefined)
+                    return
+                if (props.onSelectionChange === undefined)
+                    return
+
+                const editor = editorRef.current.editor;
+                const range = getSelectionRange(editor);
+                props.onSelectionChange(range, ...args);
             }}
             setOptions={{
                 displayIndentGuides: false,
@@ -40,7 +54,7 @@ export const Editor = (props: EditorProps) => {
                 enableSnippets: true,
                 showLineNumbers: true,
                 tabSize: 2,
-                fontSize: 15
+                fontSize: 15,
             }}
         />
     )

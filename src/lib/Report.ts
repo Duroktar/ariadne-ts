@@ -9,6 +9,7 @@ import { CharSet, Config, LabelAttach } from "../lib/Config";
 import { bton, isBoolean, isNumber, max, min_by_key, range, rangeIter, sort_by_key } from "../utils";
 import { eprintln, format, write, writeln } from "../write";
 import { Characters, iCharacters } from "./Characters";
+import { ColorFn } from "./Color";
 import { Label } from "./Label";
 import { LabelInfo, LabelKind } from "./LabelInfo";
 import { ReportBuilder } from "./ReportBuilder";
@@ -136,13 +137,22 @@ export class Report<S extends Span> implements iReport<S> {
 
     // --- Header ---
 
-    let code = this.code ? format("[E{}] ", this.code) : '';
-    let id = format("{}{}:", code, this.kind.name);
-    let kind_color = match(this.kind, [
+    let code = this.code.map(c => format("[E{}] ", c));
+
+    let id = format("{}{}:", new Show(code), match(this.kind, [
+      [ReportKind.Error,   () => this.kind.name],
+      [ReportKind.Warning, () => this.kind.name],
+      [ReportKind.Advice,  () => this.kind.name],
+      [ReportKind._Custom, (kind: any) => kind.displayName],
+    ]));
+
+    let kind_color: Option<ColorFn> = match(this.kind, [
       [ReportKind.Error,   () => this.config.error_color()],
       [ReportKind.Warning, () => this.config.warning_color()],
       [ReportKind.Advice,  () => this.config.advice_color()],
-      [ReportKind.Custom,  (kind: any) => kind.color],
+      [ReportKind._Custom, (kind): Option<ColorFn> => {
+        return kind.color
+      }],
     ]);
 
     writeln(w, "{} {}", new Display(id).fg(kind_color), new Show(this.msg));
@@ -757,9 +767,26 @@ type MatchResult<T> = T extends abstract new (...args: any) => infer RT ? RT : T
 function match<T, R>(kind: T, matchers: [T, (arg: MatchResult<T>) => R][]): R {
   for (let [type, then] of matchers) {
     // TODO: fixme .. this is a hack
-    if (<any>kind === type) return then(kind as any)
+    // console.log('matching kind: `%o` against type: `%o`', (<any>kind)?.name, (<any>type)?.name)
+    if (kind === type) {
+      // console.log('kind equal')
+      return then(kind as any)
+    }
+    if (extendsType<MatchResult<T>>(kind, type)) {
+      // console.log('kind extends')
+      return then(kind)
+    }
   }
   return null as any
+}
+
+function extendsType<T>(type: any, kind: any): type is T {
+  try {
+    // console.log('prototype:', (<any>type).prototype)
+    return ((<any>type).prototype instanceof (<any>kind)) || ((<any>type).prototype.constructor === kind);
+  } catch (err) {
+    return false
+  }
 }
 
 function *enumerate<T>(groups: T[]) {

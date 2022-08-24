@@ -1,6 +1,7 @@
 import "./_extensions"
 export { Display } from "./data/Display"
 export { Range } from './data/Range'
+export { mkStringWriter } from './data/Write'
 export { Color, Fixed } from './lib/Color'
 export { ColorGenerator } from "./lib/ColorGenerator"
 export { Config } from "./lib/Config"

@@ -33,7 +33,7 @@ function fromRust(node: Displayable): string {
     node.fmt(f);
     return f.unwrap();
   }
-  if (isOption(node)) {
+  if (isOption<any>(node)) {
     return node.unwrap_or_else(() => '');
   }
   if (isResult(node)) {

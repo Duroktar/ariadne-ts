@@ -1,16 +1,22 @@
 {
   "name": "ariadne-ts",
-  "version": "0.1.5",
+  "version": "0.1.5-alpha.10",
   "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "files": [
+    "dist/src/"
+  ],
   "license": "MIT",
   "scripts": {
+    "prebuild": "yarn run clean:dist",
     "build": "tsc",
-    "clean": "rm -rf public/ && mkdir public",
-    "prebundle": "yarn run clean && cp www/index.html public/index.html",
+    "clean:dist": "rm -rf dist/ && mkdir dist",
+    "clean:public": "rm -rf public/ && mkdir public",
+    "prebundle": "yarn run clean:public && cp www/index.html public/index.html",
     "bundle": "webpack --mode=production",
     "bundle:analyze": "cross-env ENABLE_ANALYZER=true yarn bundle",
     "bundle:dev": "webpack serve --open",
-    "compile": "npm run build && npm run bundle",
+    "compile": "npm run bundle && npm run build",
     "example": "sh scripts/run-example.sh",
     "example:watch": "sh scripts/watch-example.sh",
     "test": "vitest"

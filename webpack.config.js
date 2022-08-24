@@ -19,9 +19,9 @@ module.exports = {
   devtool: 'inline-source-map',
   devServer: {
     hot: true,
-    static: [
-      path.join(__dirname, "public"),
-    ],
+    static: {
+        directory: path.join(__dirname, 'public'),
+    },
     historyApiFallback: true
   },
   module: {
