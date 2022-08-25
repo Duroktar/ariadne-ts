@@ -1,14 +1,17 @@
 import * as React from 'react';
 import { BuilderForm } from './components/BuilderForm';
-import { SourcePane } from './components/SourcePane';
+import { EditorTabs } from './components/EditorTabs';
 import { Terminal } from './components/Terminal';
+
+import 'xterm/css/xterm.css'
+import './styles.css'
 
 export const DemoApp = () => {
     return (
         <React.Fragment>
             <div id="top">
                 <div className="source-pane">
-                    <SourcePane />
+                    <EditorTabs />
                 </div>
                 <div className="builder-form">
                     <BuilderForm />

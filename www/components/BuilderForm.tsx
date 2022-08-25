@@ -1,12 +1,11 @@
-// Render Prop
 import * as React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { builderFormSchema, BuilderForm as BuilderFormType, ErrorKind } from '../schema/builderForm';
 import { buildReport } from '../utils/buildReport';
 import { useStore } from '../store';
 import { LabelForm } from './LabelForm';
-import { builderFormDefaultValues, builderFormDevelopmentValues } from 'www/fixtures';
-import { compileBuilder } from 'www/utils/compileBuilder';
+import { builderFormDevelopmentValues } from '../fixtures';
+import { compileBuilder } from '../utils/compileBuilder';
 
 export const BuilderForm = () => {
     const builderFormValues = React.useRef(builderFormDevelopmentValues)

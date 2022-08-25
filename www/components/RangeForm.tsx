@@ -1,6 +1,6 @@
 import { ErrorMessage, Field } from 'formik'
 import * as React from 'react'
-import { useStore } from 'www/store'
+import { useStore } from '../store'
 
 export type LabelType = {
     range: [number, number]

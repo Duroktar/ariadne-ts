@@ -1,5 +1,5 @@
 import { Label, mkStringWriter, Range, Report, ReportKind, Source } from "@ariadne-ts/browser"
-import { ErrorKind } from "www/schema/builderForm"
+import { ErrorKind } from "../schema/builderForm"
 import { BuilderState } from "../types"
 
 export function buildReport(state: BuilderState, source: string): string {
@@ -49,7 +49,7 @@ export function buildReport(state: BuilderState, source: string): string {
 function getReportKind(reportKind: ErrorKind): typeof ReportKind {
   switch(reportKind) {
     case ErrorKind.Advice: return ReportKind.Advice
-    case ErrorKind.Custom: return ReportKind.Custom
+    case ErrorKind.Custom: return ReportKind._Custom
     case ErrorKind.Error: return ReportKind.Error
     case ErrorKind.Warning: return ReportKind.Warning
     default:
