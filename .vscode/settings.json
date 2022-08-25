@@ -18,6 +18,7 @@
         "**/.gradle": true,
         "**/.factorypath": true,
         "**/node_modules": true,
-        "dist": true,
+        "dist": false,
+        "public": false,
     }
 }

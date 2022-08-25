@@ -129,6 +129,8 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-NOTES.md
-
 public/**
+
+__scratch.ts
+.DS_Store.ts
+NOTES.md
