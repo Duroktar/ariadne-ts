@@ -1,4 +1,4 @@
-import { err, ok, Result } from '../data/Result';
+import { err, ok, Result } from '../data/Result.js';
 
 
 export function binary_search_by_key<T>(arr: T[], x: any, fn: (o: T) => number): Result<number, number> {

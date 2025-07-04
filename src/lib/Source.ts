@@ -1,13 +1,13 @@
 
 import assert from "assert";
-import { readFileSync } from "fs";
-import { Display } from "../data/Display";
-import { none, Option, some } from "../data/Option";
-import { err, ok, Result } from "../data/Result";
-import { Span } from "../data/Span";
-import { Range } from "../data/Range";
-import { binary_search_by_key } from "../utils";
-import { Displayable, format } from "../write";
+import { readFileSync } from "node:fs";
+import { Display } from "../data/Display.js";
+import { none, Option, some } from "../data/Option.js";
+import { err, ok, Result } from "../data/Result.js";
+import { Span } from "../data/Span.js";
+import { Range } from "../data/Range.js";
+import { binary_search_by_key } from "../utils/index.js";
+import { Displayable, format } from "../write.js";
 
 export type ErrMsg = string;
 
@@ -101,10 +101,11 @@ export class Source implements Cache<string> {
   /// Note that the line/column numbers are zero-indexed.
   get_offset_line(offset: number): Option<[Line, number, number]> {
     if (offset <= this.len()) {
-      let idx = binary_search_by_key(this.lines(), offset, line => line.offset())
-        .unwrap_or_else(idx => Math.max(0, idx.saturating_sub(1)));
+      let idx = binary_search_by_key(this.lines(), offset, line => line.offset() - 1)
+        .unwrap_or_else(idx => Math.max(0, idx - 1));
       let line = this.lines()[idx];
-      assert(line && offset >= line.offset(), format("offset = {}, line.offset = {}, idx = {}", offset, line?.offset() ?? Infinity, idx));
+      const fstring = format("offset = {}, line.offset = {}, idx = {}", offset, line?.offset() ?? Infinity, idx);
+      assert(line && offset >= line.offset(), fstring);
       const os = line.offset();
       return some([line, idx, offset - os])
     } else {

@@ -1,5 +1,5 @@
-import { Formatter } from "../data/Formatter";
-import { write } from "../write";
+import { Formatter } from "../data/Formatter.js";
+import { write } from "../write.js";
 
 /// A type that defines the kind of report being produced.
 

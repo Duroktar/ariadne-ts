@@ -1,7 +1,7 @@
-import { ColorFn } from "./Color";
-import { none, Option, some } from "../data/Option";
-import { SpanInit } from "../data/Span";
-import { Range } from "../data/Range";
+import { ColorFn } from "./Color.js";
+import { none, Option, some } from "../data/Option.js";
+import { SpanInit } from "../data/Span.js";
+import { Range } from "../data/Range.js";
 
 /// A type that represents a labelled section of source code.
 export interface Label<S extends Range> {

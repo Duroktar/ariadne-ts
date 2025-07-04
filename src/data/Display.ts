@@ -1,6 +1,6 @@
-import { isCallback } from "../utils";
-import { ColorFn } from "../lib/Color";
-import { isOption, type Option } from "./Option";
+import { isCallback } from "../utils/index.js";
+import { ColorFn } from "../lib/Color.js";
+import { isOption, type Option } from "./Option.js";
 
 export interface Display {
   fg(color: Option<ColorFn>): any;

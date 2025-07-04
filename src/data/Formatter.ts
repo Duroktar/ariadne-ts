@@ -1,5 +1,5 @@
-import { none, type Option } from "./Option";
-import { stdoutWriter, mkStringWriter, type Write } from "./Write";
+import { none, type Option } from "./Option.js";
+import { stdoutWriter, mkStringWriter, type Write } from "./Write.js";
 
 export enum Alignment {
   Left = 'Left',

@@ -1,9 +1,8 @@
-import { isNumber, isString } from "../utils";
-import { Span, SpanInit } from "./Span";
+import { isNumber, isString } from "../utils/index.js";
+import { Span, SpanInit } from "./Span.js";
 
 
 export class Range extends Span {
-  public SourceId: any;
 
   public source(): any {
     return this.SourceId;

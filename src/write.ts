@@ -1,10 +1,10 @@
 import sf from 'string-format';
-import { Display, isDisplay } from "./data/Display";
-import { stringFormatter } from "./data/Formatter";
-import { isOption, Option } from './data/Option';
-import { isResult, Result } from './data/Result';
-import { Write } from './data/Write';
-import { isShow, Show } from './data/Show';
+import { Display, isDisplay } from "./data/Display.js";
+import { stringFormatter } from "./data/Formatter.js";
+import { isOption, Option } from './data/Option.js';
+import { isResult, Result } from './data/Result.js';
+import { Write } from './data/Write.js';
+import { isShow, Show } from './data/Show.js';
 
 
 export type Displayable<T = any, E = any> =
@@ -33,7 +33,7 @@ function fromRust(node: Displayable): string {
     node.fmt(f);
     return f.unwrap();
   }
-  if (isOption(node)) {
+  if (isOption<string>(node)) {
     return node.unwrap_or_else(() => '');
   }
   if (isResult(node)) {

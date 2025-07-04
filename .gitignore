@@ -89,7 +89,6 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
@@ -134,3 +133,6 @@ public/**
 __scratch.ts
 .DS_Store.ts
 NOTES.md
+
+dist
+build

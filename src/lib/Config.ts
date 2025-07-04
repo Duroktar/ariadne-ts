@@ -1,6 +1,6 @@
-import { ColorFn, colors, Fixed } from "./Color";
-import { Display } from "../data/Display";
-import { Option, some } from "../data/Option";
+import { ColorFn, colors, Fixed } from "./Color.js";
+import { Display } from "../data/Display.js";
+import { Option, some } from "../data/Option.js";
 
 export class Config {
 

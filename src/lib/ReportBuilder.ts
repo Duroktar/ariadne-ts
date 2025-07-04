@@ -1,9 +1,9 @@
-import { Option, some } from "../data/Option";
-import { Span } from "../data/Span";
-import { Config } from "./Config";
-import { Label } from "./Label";
-import { iReport, Report } from "./Report";
-import { ReportKind } from "./ReportKind";
+import { Option, some } from "../data/Option.js";
+import { Span } from "../data/Span.js";
+import { Config } from "./Config.js";
+import { Label } from "./Label.js";
+import { iReport, Report } from "./Report.js";
+import { ReportKind } from "./ReportKind.js";
 
 /// A type used to build a [`Report`].
 

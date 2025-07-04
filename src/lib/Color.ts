@@ -21,6 +21,7 @@ export type ColorFn = ((s: string) => string) | chalk.Chalk
 
 export abstract class Color {
   static Fixed = Fixed
+  static Named = colors
 }
 
 export function Fixed(n: number) {

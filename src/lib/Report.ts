@@ -1,20 +1,20 @@
 import assert from "assert";
-import { Display } from "../data/Display";
-import { none, Option, some } from "../data/Option";
-import { Range } from "../data/Range";
-import { Show } from "../data/Show";
-import { Span } from "../data/Span";
-import { stderrWriter, stdoutWriter, Write } from '../data/Write';
-import { CharSet, Config, LabelAttach } from "../lib/Config";
-import { bton, isBoolean, isNumber, max, min_by_key, range, rangeIter, sort_by_key } from "../utils";
-import { eprintln, format, write, writeln } from "../write";
-import { Characters, iCharacters } from "./Characters";
-import { Label } from "./Label";
-import { LabelInfo, LabelKind } from "./LabelInfo";
-import { ReportBuilder } from "./ReportBuilder";
-import { ReportKind } from "./ReportKind";
-import { Cache, CacheInit } from "./Source";
-import { SourceGroup } from "./SourceGroup";
+import { Display } from "../data/Display.js";
+import { none, Option, some } from "../data/Option.js";
+import { Range } from "../data/Range.js";
+import { Show } from "../data/Show.js";
+import { Span } from "../data/Span.js";
+import { stderrWriter, stdoutWriter, Write } from '../data/Write.js';
+import { CharSet, Config, LabelAttach } from "../lib/Config.js";
+import { bton, isBoolean, isNumber, max, min_by_key, range, rangeIter, sort_by_key } from "../utils/index.js";
+import { eprintln, format, write, writeln } from "../write.js";
+import { Characters, iCharacters } from "./Characters.js";
+import { Label } from "./Label.js";
+import { LabelInfo, LabelKind } from "./LabelInfo.js";
+import { ReportBuilder } from "./ReportBuilder.js";
+import { ReportKind } from "./ReportKind.js";
+import { Cache, CacheInit } from "./Source.js";
+import { SourceGroup } from "./SourceGroup.js";
 
 /// A type representing a diagnostic that is ready to be written to output.
 
@@ -268,6 +268,7 @@ export class Report<S extends Span> implements iReport<S> {
             draw.vbar,
           )
         } else {
+          // is_ellipsis && console.log('hi mom')
           line_no_margin = format("{}{}", new Show([' ', line_no_width + 1]), is_ellipsis ? draw.vbar_gap : draw.vbar_break)
         };
 
@@ -362,6 +363,7 @@ export class Report<S extends Span> implements iReport<S> {
               } else if (vbar.is_some()) {
                 let label: Label<S> = vbar.unwrap()
                 let vb = new Display(is_ellipsis ? draw.vbar_gap : draw.vbar)
+                // is_ellipsis && console.log("hi pops")
                 return [vb.fg(label.color), new Display(' ').fg(none())]
               } else if (margin_ptr.is_some() && is_line) {
                 let [margin, is_start] = margin_ptr.unwrap()
@@ -481,6 +483,7 @@ export class Report<S extends Span> implements iReport<S> {
             is_ellipsis = true;
           } else {
             if (!this.config.compact && !is_ellipsis) {
+              // console.log(1)
               write_margin(w, idx, false, is_ellipsis, false, none(), [], none())
               write(w, "\n")
             }
@@ -547,6 +550,7 @@ export class Report<S extends Span> implements iReport<S> {
             // ll => -ll.label.priority);
 
         // Margin
+// is_ellipsis && console.log(2)
         write_margin(w, idx, true, is_ellipsis, true, none(), line_labels, margin_label)
 
         // Line
@@ -570,6 +574,7 @@ export class Report<S extends Span> implements iReport<S> {
 
           if (!this.config.compact) {
             // Margin alternate
+// console.log(3)
             write_margin(w, idx, false, is_ellipsis, true, some([row, false]), line_labels, margin_label)
             // Lines alternate
             let chars = line.chars();
@@ -624,6 +629,7 @@ export class Report<S extends Span> implements iReport<S> {
           }
 
           // Margin
+// console.log(4)
           write_margin(w, idx, false, is_ellipsis, true, some([row, true]), line_labels, margin_label)
           // Lines
           let chars = line.chars();
@@ -700,9 +706,11 @@ export class Report<S extends Span> implements iReport<S> {
       if (this.help.is_some() && is_final_group) {
         let note = this.help.unwrap()
         if (!this.config.compact) {
+console.log(5)
           write_margin(w, 0, false, false, true, some([0, false]), [], none())
           write(w, "\n")
         }
+console.log(6)
         write_margin(w, 0, false, false, true, some([0, false]), [], none())
         write(w, "{}: {}\n", new Display("Help").fg(this.config.note_color()), note)
       }
@@ -711,9 +719,11 @@ export class Report<S extends Span> implements iReport<S> {
       if (this.note.is_some() && is_final_group) {
         let note = this.note.unwrap()
         if (!this.config.compact) {
+// console.log(7)
           write_margin(w, 0, false, false, true, some([0, false]), [], none())
           write(w, "\n")
         }
+// console.log(8)
         write_margin(w, 0, false, false, true, some([0, false]), [], none())
         write(w, "{}: {}\n", new Display("Note").fg(this.config.note_color()), note)
       }

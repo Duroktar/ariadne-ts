@@ -1,6 +1,6 @@
 
-import { ColorFn, Fixed } from "./Color"
-import { clamp, range, wrapping_add_usize } from "../utils"
+import { ColorFn, Fixed } from "./Color.js";
+import { clamp, range, wrapping_add_usize } from "../utils/index.js";
 
 /// A type that can generate distinct 8-bit colors.
 export class ColorGenerator {

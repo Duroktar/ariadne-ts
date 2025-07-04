@@ -1,5 +1,5 @@
-import { format } from "../write";
-import { ok, Result } from "./Result";
+import { format } from "../write.js";
+import { ok, Result } from "./Result.js";
 
 export interface Write {
   write_str(s: string): Result<null, Error>;
@@ -34,7 +34,7 @@ class StderrWriter implements Write {
 }
 
 class StringWriter implements Write {
-  private value: string[] = []
+  public value: string[] = []
   write_str(s: string): Result<null, Error> {
     this.value.push(s)
     return ok(null)

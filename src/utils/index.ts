@@ -1,6 +1,6 @@
-import { Option } from '../data/Option';
+import { Option } from '../data/Option.js';
 
-export { binary_search_by_key } from './binary_search_by_key'
+export { binary_search_by_key } from './binary_search_by_key.js'
 
 export function range(start: number, end: number) {
   let rv = [];

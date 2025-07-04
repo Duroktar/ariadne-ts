@@ -1,9 +1,9 @@
 
-import { Formatter } from "./Formatter";
-import { isOption } from "./Option";
-import { isResult } from "./Result";
-import { isCallback, range } from "../utils";
-import { write } from "../write";
+import { Formatter } from "./Formatter.js";
+import { isOption } from "./Option.js";
+import { isResult } from "./Result.js";
+import { isCallback, range } from "../utils/index.js";
+import { write } from "../write.js";
 
 export class Show {
   constructor(public self: any) {}

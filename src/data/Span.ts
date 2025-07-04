@@ -1,5 +1,5 @@
-import { isNumber, isString, range } from "../utils";
-import { Range } from "./Range";
+import { isNumber, isString, range } from "../utils/index.js";
+import { Range } from "./Range.js";
 
 export type SpanInit = [src: string, range: Range] | [start: number, end: number];
 
@@ -9,7 +9,7 @@ export class Span {
     private _end: number,
   ) {}
   /// The identifier used to uniquely refer to a source. In most cases, this is the fully-qualified path of the file.
-  SourceId: any;
+  public SourceId: any;
 
   /// Get the identifier of the source that this span refers to.
   source() { return this.SourceId }
