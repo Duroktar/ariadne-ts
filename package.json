@@ -1,6 +1,6 @@
 {
   "name": "ariadne-ts",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "type": "module",
   "files": [
     "dist"
@@ -20,27 +20,24 @@
     "dev": "tsc --watch",
     "clean": "rm -rf dist/",
     "prebundle": "npm run clean",
-    "bundle": "npm run build && npm publish",
-    "bundle:analyze": "cross-env ENABLE_ANALYZER=true npm run bundle",
+    "bundle": "npm run build",
+    "publish": "npm run bundle && npm publish",
     "example": "sh scripts/run-example.sh",
     "example:watch": "sh scripts/watch-example.sh",
-    "test": "ts-node tests/simple_test.ts"
+    "test": "vitest"
   },
   "devDependencies": {
     "@types/node": "^24.0.10",
-    "@types/string-format": "^2.0.0",
+    "@types/string-format": "^2.0.3",
     "assert": "^2.0.0",
     "chalk": "^4.1.2",
     "cross-env": "^7.0.3",
-    "nodemon": "^2.0.19",
+    "nodemon": "^3.1.10",
     "process": "^0.11.10",
     "string-format": "^2.0.0",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.20.3",
     "typescript": "~5.8.3",
-    "util": "^0.12.4",
-    "vite": "^7.0.0",
-    "vite-plugin-dts": "^4.5.4",
-    "vite-plugin-node-polyfills": "^0.23.0",
+    "vite": "^7.0.2",
     "vitest": "^3.2.4"
   }
 }
