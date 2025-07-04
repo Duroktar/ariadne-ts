@@ -106,3 +106,7 @@ This project is licensed under the MIT License. See the [LICENSE](https://www.go
 
   - A huge thank you to [zesterer](https://github.com/zesterer) and all the contributors to the original [`ariadne`](https://github.com/zesterer/ariadne) for creating such a fantastic library.
 
+## Support
+
+Your crypto donations are greatly appreciated!
+Bitcoin (BTC): `3CjmTh15TJiH83bxGKWaRzuHSUqQVEvoHd` | Ethereum (ETH): `0xC7cf910c6993187149CCe1816332d19832Ca2ABB`
