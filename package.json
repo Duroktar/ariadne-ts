@@ -20,8 +20,7 @@
     "dev": "tsc --watch",
     "clean": "rm -rf dist/",
     "prebundle": "npm run clean",
-    "bundle": "npm run build",
-    "publish": "npm run bundle && npm publish",
+    "bundle": "npm run build && npm publish",
     "example": "sh scripts/run-example.sh",
     "example:watch": "sh scripts/watch-example.sh",
     "test": "vitest"
