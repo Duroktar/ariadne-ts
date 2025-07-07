@@ -57,7 +57,7 @@ def six =
 Now, you can use `ariadne-ts` to build a report that pinpoints an incompatibility between the `Nat` and `Str` types within the `match` expression's arms.
 
 ```typescript
-import { Label, Range, Report, ReportKind, Source, include_str } from "@ariadne-ts"
+import { Label, Range, Report, ReportKind, Source, include_str } from "ariadne-ts"
 
 Report.build(ReportKind.Error, "sample.tao", 34)
   .with_code(3)
