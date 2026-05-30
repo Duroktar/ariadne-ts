@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A TypeScript library for generating beautiful, Rust-style compiler diagnostics.">
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MSX1EDY9F2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-MSX1EDY9F2');
+    </script>
+
+    <title>Ariadne-TS: Beautiful Rust-Style Compiler Diagnostics</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+            margin-top: 40px;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .tagline {
+            font-size: 1.3em;
+            opacity: 0.95;
+            margin-bottom: 30px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 8px;
+            border: 2px solid white;
+            text-decoration: none;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .content {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-bottom: 40px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .feature {
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .feature h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .feature p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        #demo {
+            background: #1e1e1e;
+            color: #e0e0e0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            line-height: 1.5;
+            margin: 20px 0;
+        }
+
+        .demo-section h2 {
+            color: #667eea;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .code-sample {
+            background: #f8f9ff;
+            border-left: 3px solid #667eea;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .code-sample code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+            color: #333;
+        }
+
+        .install-section {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .install-section p {
+            margin-bottom: 10px;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+            padding-bottom: 40px;
+            font-size: 0.9em;
+        }
+
+        footer a {
+            color: #fff;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        footer a:hover {
+            opacity: 0.8;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin: 5px 5px 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ariadne-ts</h1>
+            <p class="tagline">Beautiful, Rust-style compiler diagnostics for TypeScript</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/Duroktar/ariadne-ts" class="btn btn-primary">View on GitHub</a>
+                <a href="https://www.npmjs.com/package/ariadne-ts" class="btn btn-secondary">npm Package</a>
+            </div>
+        </header>
+
+        <div class="content">
+            <h2 style="color: #667eea; font-size: 2em; margin-bottom: 20px;">About</h2>
+            <p style="margin-bottom: 15px;">
+                <strong>ariadne-ts</strong> is a TypeScript library for generating elegant, informative, and context-aware error reports. 
+                Create beautiful diagnostic messages with the style and clarity of Rust's compiler output.
+            </p>
+            <p style="margin-bottom: 20px; color: #666;">
+                This library is a direct port of the excellent Rust crate <a href="https://github.com/zesterer/ariadne" style="color: #667eea;">ariadne</a>, 
+                bringing professional-grade diagnostics to the JavaScript ecosystem.
+            </p>
+
+            <h3 style="color: #667eea; font-size: 1.3em; margin: 30px 0 15px 0;">Features</h3>
+            <div class="features">
+                <div class="feature">
+                    <h3>📌 Multi-Label Diagnostics</h3>
+                    <p>Attach multiple labels to highlight related code locations in a single report.</p>
+                </div>
+                <div class="feature">
+                    <h3>🎨 Custom Colors & Themes</h3>
+                    <p>Full control over colors and styling to match your tool's branding.</p>
+                </div>
+                <div class="feature">
+                    <h3>🔗 Complex Pointer Support</h3>
+                    <p>Create clear, non-overlapping annotations even for complex nested code.</p>
+                </div>
+                <div class="feature">
+                    <h3>📝 Rich Context</h3>
+                    <p>Add notes, hints, and helpful guidance to guide users toward solutions.</p>
+                </div>
+                <div class="feature">
+                    <h3>⚡ Framework Agnostic</h3>
+                    <p>Pure TypeScript with minimal dependencies, works anywhere.</p>
+                </div>
+                <div class="feature">
+                    <h3>🛡️ Type Safe</h3>
+                    <p>Full TypeScript support with comprehensive type definitions.</p>
+                </div>
+            </div>
+
+            <h3 style="color: #667eea; font-size: 1.3em; margin: 30px 0 15px 0;">Quick Start</h3>
+            
+            <div class="install-section">
+                <p><strong>Install from npm:</strong></p>
+                <div class="code-sample">
+                    <code>npm install ariadne-ts</code>
+                </div>
+                <p style="margin-top: 10px;"><strong>Or with yarn:</strong></p>
+                <div class="code-sample">
+                    <code>yarn add ariadne-ts</code>
+                </div>
+            </div>
+
+            <h3 style="color: #667eea; font-size: 1.3em; margin: 30px 0 15px 0;">Example Usage</h3>
+            <div class="code-sample">
+                <code><pre>import { Label, Range, Report, ReportKind, Source } from "ariadne-ts"
+
+Report.build(ReportKind.Error, "sample.tao", 34)
+  .with_code(3)
+  .with_message("Incompatible types")
+  .with_label(Label.from(["sample.tao", Range.new(32, 33)])
+    .with_message("This is of type Nat"))
+  .with_label(Label.from(["sample.tao", Range.new(42, 45)])
+    .with_message("This is of type Str"))
+  .with_note("Outputs must coerce to the same type")
+  .finish()
+  .print(["sample.tao", Source.from(sourceCode)])</pre></code>
+            </div>
+
+            <h3 style="color: #667eea; font-size: 1.3em; margin: 30px 0 15px 0;">Example Output</h3>
+            <div id="demo"></div>
+
+            <h3 style="color: #667eea; font-size: 1.3em; margin: 30px 0 15px 0;">Use Cases</h3>
+            <ul style="margin-left: 20px; color: #666;">
+                <li>🔨 <strong>Language Compilers:</strong> Generate diagnostic output for custom programming languages</li>
+                <li>🔍 <strong>Linters & Analyzers:</strong> Report issues in code with rich context and suggestions</li>
+                <li>✅ <strong>Type Checkers:</strong> Display type mismatches and related locations</li>
+                <li>🧪 <strong>Test Frameworks:</strong> Format test failures with code context</li>
+                <li>📋 <strong>Code Generators:</strong> Report errors during code generation with source mapping</li>
+            </ul>
+
+            <h3 style="color: #667eea; font-size: 1.3em; margin: 30px 0 15px 0;">Resources</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0;">
+                <span class="badge">📚 <a href="https://github.com/Duroktar/ariadne-ts#readme" style="color: white;">Documentation</a></span>
+                <span class="badge">💬 <a href="https://github.com/Duroktar/ariadne-ts/issues" style="color: white;">Issues</a></span>
+                <span class="badge">🤝 <a href="https://github.com/Duroktar/ariadne-ts/blob/master/LICENSE" style="color: white;">MIT License</a></span>
+            </div>
+        </div>
+
+        <footer>
+            <p>Created as a TypeScript port of the original <a href="https://github.com/zesterer/ariadne">ariadne</a> library by zesterer</p>
+            <p style="margin-top: 10px; opacity: 0.8;">© 2025 ariadne-ts | Built with ❤️</p>
+        </footer>
+    </div>
+
+    <script src="client.bundle.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>
